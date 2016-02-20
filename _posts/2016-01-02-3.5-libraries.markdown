@@ -1,0 +1,58 @@
+---
+published: true
+title: 3.5. Libraries
+category: Chapter-3
+layout: post
+---
+As you might have noticed, a lot of tiny details go into API consumption. For each endpoint you will be working with (you may have to work with 5 or more in some cases), you need to prepare the request, put together all necessary request headers, format the request body or parameters and encode them appropriately, make the request, get the response, process the response headers, parse the response, manage errors, manage authentication, etc. To make this easier, API providers and developers provide libraries developers can build on in different programming languages.
+
+A library is simply a set of helper functions that have abstracted all the low level API work. If for example I need to connect to Twitter’s public stream and listen to tweets containing the word ‘API’, I need to prepare the necessary parameters and request to the public stream endpoint in strict adherence to the OAuth standard. I also need to create and manage a connection that can handle the stream of incoming tweets, extract and format each tweet from the stream and manage network lags and errors. Building that from ground up will take a good time. But then, I can just use *twit*[^1], an unofficial Twitter library and have the work reduced to this few lines of code:
+
+{% highlight js %}
+var Twit = require('twit');
+
+var twitter = new Twit({
+  consumer_key: 'KEY',
+  consumer_secret: 'SECRET',
+  access_token: 'TOKEN',
+  access_token_secret: 'TOKEN_SECRET'
+});
+
+var stream = twitter.stream('statuses/filter',
+           {track: 'API' });
+stream.on('tweet', function (tweet) {
+  console.log(tweet.text);
+});
+{% endhighlight %}
+
+Isn’t that just amazing?
+
+We can even step it up a notch. We can bring in another library to help us link the URLs, hashtags and mentions contained in the tweet. Twitter has an official one we can use[^2].
+
+{% highlight js %}
+var Twit = require('twit'),
+  Twtxt = require('twitter-text');
+
+var twitter = new Twit({
+  consumer_key: KEY,
+  consumer_secret: SECRET,
+  access_token: TOKEN,
+  access_token_secret: TOKEN_SECRET
+});
+
+var stream = twitter.stream('statuses/filter',
+                {track: 'API'});
+stream.on('tweet', function (tweet) {
+  console.log(
+    Twtxt.autoLink(Twtxt.htmlEscape(tweet.text), {
+      urlEntities: tweet.entities.urls
+    })
+  );
+});
+{% endhighlight %}
+
+
+The takeaway here is that you don’t need to take the long route of building everything from scratch. Check the API developer website for libraries, official (built by the provider) or unofficial (built by other developers), and see how you can leverage any to speed up your development process. Unless it is a new API, and I mean really new, there must be something you can build on. If you can’t find any, then that’s probably your cue to build one for other developers :)
+
+[^1]: twit - Twitter API client for node (REST & Streaming): [https://github.com/ttezel/twit](https://github.com/ttezel/twit)
+[^2]: twitter text (js) - A javascript library that provides autolinking and extraction for URLs, usernames, lists, and hashtags: [https://github.com/twitter/twitter-text-js](https://github.com/twitter/twitter-text-js)

@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="@kehers">
+  <meta name="twitter:title" content="4.0. OAuth">
+  <meta name="twitter:description" content="I briefly talked about OAuth in the last chapter. In this chapter, we will take a deeper look. But before we go on, here are three important definitions:
+
+
+  Service Provider: A web application tha...">
+  <meta name="twitter:creator" content="@kehers">
+  <title>4.0. OAuth</title>
+  <link href='https://fonts.googleapis.com/css?family=Libre+Baskerville:400,700' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" href="/assets/css/normalize.css">
+  <link rel="stylesheet" href="/assets/css/skeleton.css">
+  <link rel="stylesheet" href="/assets/css/custom.css">
+  <link rel="stylesheet" href="/assets/css/zenburn.css" />
+</head>
+<body>
+
+<div class="container">
+  <header>
+    <div class="row">
+      <div id="logo" class="three columns">
+        <div id="menu">☰</div>
+      </div>
+    </div>
+  </header>
+  <div class="row">
+    <div class="six offset-by-three columns">
+      <article>
+        <h5>Chapter 4</h5>
+        <h1 class="title">4.0. OAuth</h1>
+        <p>I briefly talked about OAuth in the last chapter. In this chapter, we will take a deeper look. But before we go on, here are three important definitions:</p>
+
+<ul>
+  <li>Service Provider: A web application that allows access via OAuth.</li>
+  <li>User: An individual who has an account with the Service Provider.</li>
+  <li>Consumer: A website or application that uses OAuth to access the Service Provider on behalf of the User.</li>
+</ul>
+
+<p>Now let’s do a proper analogy. I want to create an application that displays all the profile pictures of a user’s Facebook friends as one big image. I will call it <em>AviCollage</em>.</p>
+
+<p>To do this, without OAuth in the flow, I (the Consumer) will have to:</p>
+
+<ol>
+  <li>Connect as the user to Facebook (the Service Provider)</li>
+  <li>Pull the user’s friend list (the Resource)</li>
+  <li>Get all their profile pictures and put them together as a big image</li>
+  <li>Display the image to the user</li>
+</ol>
+
+<p>Normally, connecting to Facebook as the user will mean, the user enters his username and password in AviCollage and it is sent to Facebook for authentication.</p>
+
+<p>But what can possibly go wrong?</p>
+
+<ol>
+  <li>The user’s credentials (possibly the same username and password he uses for a hundred other sites) goes through <em>AviCollage</em>. Somewhere in the code, I might have as well added few lines to save this credentials for my personal use. <em>Insert evil grin</em></li>
+  <li>Even though <em>AviCollage</em> is supposed to only pull the user’s friend list and profile images, I can also add few lines of code to post on the user’s wall, telling his friends to get their own avatar collage. While at that, why not just peek at his messages as well?</li>
+</ol>
+
+<p>This is where OAuth comes in. OAuth allows users grant the consumer access to their resources on the service provider without sharing their credentials with the consumer. While users don’t get to share their credentials with consumers, they can also limit resources the consumer can access.</p>
+
+<p>Let’s revisit <em>AviCollage</em> with OAuth in the picture. Since Facebook only allows OAuth for user authorization, I will have to:</p>
+
+<ol>
+  <li>Register the application <em>AviCollage</em> as a consumer with Facebook. This registration is important. It gets me a consumer <strong>key</strong> and <strong>secret</strong> token for OAuth requests</li>
+  <li>Redirect the user to a special URL on Facebook. This URL is generally called the <strong>authorization URL</strong></li>
+  <li>The URL opens a page telling the user <em>AviCollage</em> wants to access his friend list. If he is not logged in, he is prompted to login. The user either accepts or declines the request</li>
+  <li>If he accepts, he is redirected to <em>AviCollage</em> with some query strings that can be exchanged for a special authorization token. <em>AviCollage</em> can then use this token to make a request to pull the user’s friend list</li>
+  <li>If he declines access, he is redirected back to <em>AviCollage</em> with an error message</li>
+</ol>
+
+<p>Notice how in the example screenshot we only get to request permission to the resources: public profile (included by default) and friend list. These permissions are called <strong>scopes</strong>.</p>
+
+<p>Two main versions of OAuth exist - OAuth 1 and 2. We will look at the implementation of both and how they differ. The 1.0 protocol we will be looking at is the final version published from a security revised version, <em>revision A</em>, of the core specification. It is still popularly referred to as OAuth 1.0a so don’t be confused if you see OAuth 1.0a anywhere, Twitter or Tumblr for example.</p>
+
+<p>You may never have to write a full implementation of OAuth. There are lots of <a href="http://oauth.net/code/">libraries</a> that have done that. However, having an idea of how it all fits together is an interesting thing to explore.</p>
+
+      </article>
+    </div>
+  </div>
+</div>
+<div class="colophon">
+  <div class="container">
+    <div class="row">
+      <div class="six offset-by-three columns">
+        <ul class="pagination">
+        
+        
+        <li class="six columns m-t-20 prev"><a href="/chapter-3/3.6-rate-limit.html">3.6. Rate Limit</a></li>
+        <li class="six columns m-t-20 next"><a href="/chapter-4/4.1-oauth-1.0.html">4.1. OAuth 1.0</a></li>
+        </ul>
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+          var disqus_shortname = 'kehers';
+          (function() {
+              var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+              dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+              (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+          })();
+        </script>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="container">
+    <div class="row">
+      <div class="six offset-by-three columns">
+        <nav>
+          <li><a href="/">home</a></li>
+          <li><a href="http://gum.co/Sxoj" class="bordered">Download the book. Free</a></li>
+        </nav>
+        <p>&copy; 2016. Opeyemi Obembe. All rights reserved.</p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script type="text/javascript" src="/assets/js/menu.js"></script>
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+ga('create', 'UA-53373832-1', 'auto');
+ga('send', 'pageview');
+</script>
+
+</body>
+</html>

@@ -1,0 +1,43 @@
+---
+published: true
+title: 4.0. OAuth
+category: Chapter-4
+layout: post
+---
+I briefly talked about OAuth in the last chapter. In this chapter, we will take a deeper look. But before we go on, here are three important definitions:
+
+- Service Provider: A web application that allows access via OAuth.
+- User: An individual who has an account with the Service Provider.
+- Consumer: A website or application that uses OAuth to access the Service Provider on behalf of the User.
+
+Now let’s do a proper analogy. I want to create an application that displays all the profile pictures of a user's Facebook friends as one big image. I will call it *AviCollage*.
+
+To do this, without OAuth in the flow, I (the Consumer) will have to:
+
+1. Connect as the user to Facebook (the Service Provider)
+2. Pull the user's friend list (the Resource)
+3. Get all their profile pictures and put them together as a big image
+4. Display the image to the user
+
+Normally, connecting to Facebook as the user will mean, the user enters his username and password in AviCollage and it is sent to Facebook for authentication.
+
+But what can possibly go wrong?
+
+1. The user's credentials (possibly the same username and password he uses for a hundred other sites) goes through *AviCollage*. Somewhere in the code, I might have as well added few lines to save this credentials for my personal use. *Insert evil grin*
+2. Even though *AviCollage* is supposed to only pull the user’s friend list and profile images, I can also add few lines of code to post on the user’s wall, telling his friends to get their own avatar collage. While at that, why not just peek at his messages as well?
+
+This is where OAuth comes in. OAuth allows users grant the consumer access to their resources on the service provider without sharing their credentials with the consumer. While users don't get to share their credentials with consumers, they can also limit resources the consumer can access.
+
+Let's revisit *AviCollage* with OAuth in the picture. Since Facebook only allows OAuth for user authorization, I will have to:
+
+1. Register the application *AviCollage* as a consumer with Facebook. This registration is important. It gets me a consumer **key** and **secret** token for OAuth requests
+2. Redirect the user to a special URL on Facebook. This URL is generally called the **authorization URL**
+3. The URL opens a page telling the user *AviCollage* wants to access his friend list. If he is not logged in, he is prompted to login. The user either accepts or declines the request
+4. If he accepts, he is redirected to *AviCollage* with some query strings that can be exchanged for a special authorization token. *AviCollage* can then use this token to make a request to pull the user’s friend list
+5. If he declines access, he is redirected back to *AviCollage* with an error message
+
+Notice how in the example screenshot we only get to request permission to the resources: public profile (included by default) and friend list. These permissions are called **scopes**.
+
+Two main versions of OAuth exist - OAuth 1 and 2. We will look at the implementation of both and how they differ. The 1.0 protocol we will be looking at is the final version published from a security revised version, *revision A*, of the core specification. It is still popularly referred to as OAuth 1.0a so don’t be confused if you see OAuth 1.0a anywhere, Twitter or Tumblr for example.
+
+You may never have to write a full implementation of OAuth. There are lots of [libraries](http://oauth.net/code/) that have done that. However, having an idea of how it all fits together is an interesting thing to explore.

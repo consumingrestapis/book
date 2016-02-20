@@ -1,0 +1,18 @@
+---
+published: true
+title: 2.0. A second look at HTTP
+category: Chapter-2
+layout: post
+---
+We have seen that REST uses HTTP for data communication as browsers do. Virtually everything we will be doing with REST will be through HTTP. It is therefore important we take a closer look at HTTP itself.
+
+HTTP is one of the protocols for data communication on the internet. It enables data transmission in a request-response pattern. The client sends a request for a resource to the server. The server in turn replies with a response. When you type a web address in a browser (client), that is basically what happens - the browser sends a request for the webpage and the server sends a response with the page’s content.
+
+An HTTP message (request or response) has the format:
+
+- An initial line
+- Zero or more header lines
+- A blank line, and
+- An optional message body
+
+Let’s look at both message types.

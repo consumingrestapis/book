@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="@kehers">
+  <meta name="twitter:title" content="3.3. Errors">
+  <meta name="twitter:description" content="Things can go wrong; a call to a wrong API endpoint, use of a wrong request method (like using GET instead of POST), missing parameters, wrong authentication details, etc. When this happens, the RE...">
+  <meta name="twitter:creator" content="@kehers">
+  <title>3.3. Errors</title>
+  <link href='https://fonts.googleapis.com/css?family=Libre+Baskerville:400,700' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" href="/assets/css/normalize.css">
+  <link rel="stylesheet" href="/assets/css/skeleton.css">
+  <link rel="stylesheet" href="/assets/css/custom.css">
+  <link rel="stylesheet" href="/assets/css/zenburn.css" />
+</head>
+<body>
+
+<div class="container">
+  <header>
+    <div class="row">
+      <div id="logo" class="three columns">
+        <div id="menu">☰</div>
+      </div>
+    </div>
+  </header>
+  <div class="row">
+    <div class="six offset-by-three columns">
+      <article>
+        <h5>Chapter 3</h5>
+        <h1 class="title">3.3. Errors</h1>
+        <p>Things can go wrong; a call to a wrong API endpoint, use of a wrong request method (like using GET instead of POST), missing parameters, wrong authentication details, etc. When this happens, the REST API should let you know. In most cases, the REST API will send back an error code and message. Most REST APIs use the standard HTTP status codes we talked about earlier. They are returned in the status line with the detailed error message returned as the response body.</p>
+
+<p>Here is an example with the 500px<sup id="fnref:1"><a href="#fn:1" class="footnote">1</a></sup> API</p>
+
+<figure class="highlight"><pre><code class="language-text" data-lang="text">GET /v1/photos?feature=popular HTTP/1.1
+Host: api.500px.com
+
+HTTP/1.1 401 Unauthorized
+Date: Tue, 06 Oct 2015 09:24:39 GMT
+Content-Type: application/json; charset=utf-8
+Transfer-Encoding: chunked
+Connection: keep-alive
+Status: 401 Unauthorized
+Server: api10</code></pre></figure>
+
+<figure class="highlight"><pre><code class="language-json" data-lang="json"><span class="p">{</span><span class="w">
+  </span><span class="nt">"error"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Consumer key missing."</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="mi">401</span><span class="w">
+</span><span class="p">}</span></code></pre></figure>
+
+<p>500px API returns a <code class="highlighter-rouge">401 Unauthorized</code> HTTP status and a JSON formatted error message with the 401 error code and the exact error reason. APIs that return standard HTTP status codes in the response status line may also include non-standard codes in the response body. An example is Twitter. A request to an API resource that does not exist will return a 404 HTTP status code in the status line but a code <strong>34</strong> in the JSON response:</p>
+
+<figure class="highlight"><pre><code class="language-text" data-lang="text">{"errors":[{"message":"Sorry, that page does not exist","code":34}]}</code></pre></figure>
+
+<p>Some APIs don’t use standard HTTP status codes either. When there are errors, the HTTP status still reads <code class="highlighter-rouge">200 OK</code> but the result body will contain the non-HTTP code and detailed message. An example is Flickr.</p>
+
+<figure class="highlight"><pre><code class="language-text" data-lang="text">GET /services/rest/?method=flickr.test.echo HTTP/1.1
+Host: api.flickr.com
+
+HTTP/1.1 200 OK
+Date: Wed, 07 Oct 2015 09:57:11 GMT
+Content-Type: text/xml; charset=utf-8
+Content-Length: 132</code></pre></figure>
+
+<figure class="highlight"><pre><code class="language-xml" data-lang="xml"><span class="cp">&lt;?xml version="1.0" encoding="utf-8" ?&gt;</span>
+<span class="nt">&lt;rsp</span> <span class="na">stat=</span><span class="s">"fail"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;err</span> <span class="na">code=</span><span class="s">"100"</span> <span class="na">msg=</span><span class="s">"Invalid API Key (Key has invalid format)"</span> <span class="nt">/&gt;</span>
+<span class="nt">&lt;/rsp&gt;</span></code></pre></figure>
+
+<p>When developing API solutions, you need to make allowance for these error cases. You need to understand how errors are returned by the provider and build to be able to capture and interpret this to your users in a subtle way.</p>
+
+<div class="footnotes">
+  <ol>
+    <li id="fn:1">
+      <p>500px.com is a photo sharing and discovery community. The API documentation is available on Github here: <a href="https://github.com/500px/api-documentation">https://github.com/500px/api-documentation</a> <a href="#fnref:1" class="reversefootnote">&#8617;</a></p>
+    </li>
+  </ol>
+</div>
+
+      </article>
+    </div>
+  </div>
+</div>
+<div class="colophon">
+  <div class="container">
+    <div class="row">
+      <div class="six offset-by-three columns">
+        <ul class="pagination">
+        
+        
+        <li class="six columns m-t-20 prev"><a href="/chapter-3/3.2-response-formats.html">3.2. Response formats</a></li>
+        <li class="six columns m-t-20 next"><a href="/chapter-3/3.4-authentication-and-authorization.html">3.4. Authentication & Authorization</a></li>
+        </ul>
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+          var disqus_shortname = 'kehers';
+          (function() {
+              var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+              dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+              (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+          })();
+        </script>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="container">
+    <div class="row">
+      <div class="six offset-by-three columns">
+        <nav>
+          <li><a href="/">home</a></li>
+          <li><a href="http://gum.co/Sxoj" class="bordered">Download the book. Free</a></li>
+        </nav>
+        <p>&copy; 2016. Opeyemi Obembe. All rights reserved.</p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script type="text/javascript" src="/assets/js/menu.js"></script>
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+ga('create', 'UA-53373832-1', 'auto');
+ga('send', 'pageview');
+</script>
+
+</body>
+</html>

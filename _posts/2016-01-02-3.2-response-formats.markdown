@@ -1,0 +1,32 @@
+---
+published: true
+title: 3.2. Response formats
+category: Chapter-3
+layout: post
+---
+So far, we've seen responses returned in JSON format. JSON is commonly used by most providers because it is lightweight (compared to XML[^1]), can contain object and array data types and it is easy to parse across many programming languages.
+
+But JSON is not the only format responses can be returned as. There are other formats like CSV[^2], XML, and Plain text.
+
+An API may support one or more of these formats. When an API does, there will be a way (and well documented) to specify your preferred format for a call. The API may specify you send your preferred format as a URL query parameter, as a request header or provide a slightly different endpoint you can make a request to.
+
+Bitly[^3] for example supports `txt` (plain text), `json` and `xml`. You only need to pass your preferred format as a URL query parameter.
+
+{% highlight text %}
+GET /v3/shorten?access_token=ACCESS_TOKEN&longUrl=
+  http%3A%2F%2Fgoogle.com%2F&format=txt HTTP/1.1
+Host: api-ssl.bitly.com
+{% endhighlight %}
+
+This will return a plain text response like this:
+
+{% highlight text %}
+http://bit.ly/ze6poY
+{% endhighlight %}
+
+By knowing the available response formats an API supports, we can easily make decisions on implementation and development.
+
+
+[^1]: Extensible Markup Language: [https://en.wikipedia.org/wiki/XML](https://en.wikipedia.org/wiki/XML)
+[^2]: Comma-separated Values: [https://en.wikipedia.org/wiki/Comma-separated_values](https://en.wikipedia.org/wiki/Comma-separated_values)
+[^3]: bit.ly is a URL shortening service. The response formats used by the API is documented here: [http://dev.bitly.com/formats.html](http://dev.bitly.com/formats.html)

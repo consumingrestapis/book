@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="@kehers">
+  <meta name="twitter:title" content="3.2. Response formats">
+  <meta name="twitter:description" content="So far, we’ve seen responses returned in JSON format. JSON is commonly used by most providers because it is lightweight (compared to XML1), can contain object and array data types and it is easy to...">
+  <meta name="twitter:creator" content="@kehers">
+  <title>3.2. Response formats</title>
+  <link href='https://fonts.googleapis.com/css?family=Libre+Baskerville:400,700' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" href="/assets/css/normalize.css">
+  <link rel="stylesheet" href="/assets/css/skeleton.css">
+  <link rel="stylesheet" href="/assets/css/custom.css">
+  <link rel="stylesheet" href="/assets/css/zenburn.css" />
+</head>
+<body>
+
+<div class="container">
+  <header>
+    <div class="row">
+      <div id="logo" class="three columns">
+        <div id="menu">☰</div>
+      </div>
+    </div>
+  </header>
+  <div class="row">
+    <div class="six offset-by-three columns">
+      <article>
+        <h5>Chapter 3</h5>
+        <h1 class="title">3.2. Response formats</h1>
+        <p>So far, we’ve seen responses returned in JSON format. JSON is commonly used by most providers because it is lightweight (compared to XML<sup id="fnref:1"><a href="#fn:1" class="footnote">1</a></sup>), can contain object and array data types and it is easy to parse across many programming languages.</p>
+
+<p>But JSON is not the only format responses can be returned as. There are other formats like CSV<sup id="fnref:2"><a href="#fn:2" class="footnote">2</a></sup>, XML, and Plain text.</p>
+
+<p>An API may support one or more of these formats. When an API does, there will be a way (and well documented) to specify your preferred format for a call. The API may specify you send your preferred format as a URL query parameter, as a request header or provide a slightly different endpoint you can make a request to.</p>
+
+<p>Bitly<sup id="fnref:3"><a href="#fn:3" class="footnote">3</a></sup> for example supports <code class="highlighter-rouge">txt</code> (plain text), <code class="highlighter-rouge">json</code> and <code class="highlighter-rouge">xml</code>. You only need to pass your preferred format as a URL query parameter.</p>
+
+<figure class="highlight"><pre><code class="language-text" data-lang="text">GET /v3/shorten?access_token=ACCESS_TOKEN&amp;longUrl=
+  http%3A%2F%2Fgoogle.com%2F&amp;format=txt HTTP/1.1
+Host: api-ssl.bitly.com</code></pre></figure>
+
+<p>This will return a plain text response like this:</p>
+
+<figure class="highlight"><pre><code class="language-text" data-lang="text">http://bit.ly/ze6poY</code></pre></figure>
+
+<p>By knowing the available response formats an API supports, we can easily make decisions on implementation and development.</p>
+
+<div class="footnotes">
+  <ol>
+    <li id="fn:1">
+      <p>Extensible Markup Language: <a href="https://en.wikipedia.org/wiki/XML">https://en.wikipedia.org/wiki/XML</a> <a href="#fnref:1" class="reversefootnote">&#8617;</a></p>
+    </li>
+    <li id="fn:2">
+      <p>Comma-separated Values: <a href="https://en.wikipedia.org/wiki/Comma-separated_values">https://en.wikipedia.org/wiki/Comma-separated_values</a> <a href="#fnref:2" class="reversefootnote">&#8617;</a></p>
+    </li>
+    <li id="fn:3">
+      <p>bit.ly is a URL shortening service. The response formats used by the API is documented here: <a href="http://dev.bitly.com/formats.html">http://dev.bitly.com/formats.html</a> <a href="#fnref:3" class="reversefootnote">&#8617;</a></p>
+    </li>
+  </ol>
+</div>
+
+      </article>
+    </div>
+  </div>
+</div>
+<div class="colophon">
+  <div class="container">
+    <div class="row">
+      <div class="six offset-by-three columns">
+        <ul class="pagination">
+        
+        
+        <li class="six columns m-t-20 prev"><a href="/chapter-3/3.1-api-request-tools.html">3.1. API Request tools</a></li>
+        <li class="six columns m-t-20 next"><a href="/chapter-3/3.3-errors.html">3.3. Errors</a></li>
+        </ul>
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+          var disqus_shortname = 'kehers';
+          (function() {
+              var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+              dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+              (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+          })();
+        </script>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="container">
+    <div class="row">
+      <div class="six offset-by-three columns">
+        <nav>
+          <li><a href="/">home</a></li>
+          <li><a href="http://gum.co/Sxoj" class="bordered">Download the book. Free</a></li>
+        </nav>
+        <p>&copy; 2016. Opeyemi Obembe. All rights reserved.</p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script type="text/javascript" src="/assets/js/menu.js"></script>
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+ga('create', 'UA-53373832-1', 'auto');
+ga('send', 'pageview');
+</script>
+
+</body>
+</html>

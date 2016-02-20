@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="@kehers">
+  <meta name="twitter:title" content="{{ page.title }}">
+  <meta name="twitter:description" content="{{ content | strip_html | truncate: 200 }}">
+  <meta name="twitter:creator" content="@kehers">
+  <title>{{ page.title }}</title>
+  <link href='https://fonts.googleapis.com/css?family=Libre+Baskerville:400,700' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" href="/assets/css/normalize.css">
+  <link rel="stylesheet" href="/assets/css/skeleton.css">
+  <link rel="stylesheet" href="/assets/css/custom.css">
+  <link rel="stylesheet" href="/assets/css/zenburn.css" />
+</head>
+<body>
+
+<div class="container">
+  <header>
+    <div class="row">
+      <div id="logo" class="three columns">
+        <div id="menu">☰</div>
+      </div>
+    </div>
+  </header>
+  <div class="row">
+    <div class="six offset-by-three columns">
+      <article>
+        <h5>{{ page.categories | first | replace:'-',' ' }}</h5>
+        <h1 class="title">{{ page.title }}</h1>
+        {{ content }}
+      </article>
+    </div>
+  </div>
+</div>
+<div class="colophon">
+  <div class="container">
+    <div class="row">
+      <div class="six offset-by-three columns">
+        <ul class="pagination">
+        {% for post in site.posts %}
+          {% if post.url == page.url %}
+            {% assign post_index = forloop.index %}
+            {% assign post_index0 = forloop.index0 %}
+          {% endif %}
+        {% endfor %}
+        {% for post in site.posts %}
+          {% if post_index == forloop.index0 %}
+            {% assign prev_url = post.url %}
+            {% assign prev_title = post.title %}
+          {% endif %}
+          {% if post_index0 == forloop.index %}
+            {% assign next_url = post.url %}
+            {% assign next_title = post.title %}
+          {% endif %}
+        {% endfor %}
+        <li class="six columns m-t-20 prev">{% if prev_url %}<a href="{{ prev_url }}">{{ prev_title }}</a>{% endif %}</li>
+        <li class="six columns m-t-20 next">{% if next_url %}<a href="{{ next_url }}">{{ next_title }}</a>{% endif %}</li>
+        </ul>
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+          var disqus_shortname = 'kehers';
+          (function() {
+              var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+              dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+              (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+          })();
+        </script>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% include footer.html %}

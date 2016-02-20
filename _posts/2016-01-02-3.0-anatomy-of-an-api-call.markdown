@@ -1,0 +1,23 @@
+---
+published: true
+title: 3.0. Anatomy of an API call
+category: Chapter-3
+layout: post
+---
+How do we even start making API calls? How do we manage the requests and responses? What tools can we use?
+
+Consuming a REST API starts with identifying the API and the documentation. When a platform provides a REST API, it documents the available resources, URLs to perform different actions on the resources (endpoints), HTTP request methods to use, data parameters to send and responses to expect. Services that offer API access always have the link to the documentation displayed on the homepage (the footer most times). The trend is to use "developers" for the link.
+
+Facebook:
+SoundCloud:
+Instagram:
+
+For our exploration, we will look at a  simple API - Postcodes.io, a post code & geolocation API for the UK.
+
+The first API method on the documentation page (postcodes.io/docs) is for **Postcode Lookup**. The request method is **GET** meaning we need to send a GET request to `api.postcodes.io/postcodes/{postcode}` e.g `https://api.postcodes.io/postcodes/OX49 5NU`.
+
+Since it is a GET request, we can just paste that URL in our browser. 
+
+And there, the API response!
+
+The second endpoint for **Bulk Postcode Lookup** uses **POST**. We need to send the post codes to the endpoint using POST. Unlike GET, POST is tricky to do from the browser. You won't be consuming an API from the browser anyway. In the real world, this happens in your code. The browser only helps to test or make a quick API call. So besides the browser, what are some tools that can be used to test or make quick API requests without writing code?

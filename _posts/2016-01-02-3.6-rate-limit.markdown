@@ -1,0 +1,30 @@
+---
+published: true
+title: 3.6. Rate Limit
+category: Chapter-3
+layout: post
+---
+Most APIs place a limit on the number of request you can make at a particular time. This is called **rate limiting**. It is done to prevent spam and weighing down the server with too many requests.
+
+Different APIs have different rate limits.  The limit and how to monitor the number will be well documented. On Instagram, the global rate limit is 5000/hour per application or authentication token. Header fields to track the rate limit are also provided in the response.
+
+{% highlight text %}
+GET /v1/tags/nofilter?access_token=51624076.1fb234
+  f.4ba35082be69465f9b1c0b4cc720287d HTTP/1.1
+Host: api.instagram.com
+
+HTTP/1.1 200 OK
+X-Ratelimit-Limit: 5000
+X-Ratelimit-Remaining: 4999
+Date: Sun, 11 Oct 2015 06:19:23 GMT
+Content-Length: 72
+Content-Type: application/json; charset=utf-8
+{% endhighlight %}
+
+Exceeding the Instagram rate limit will return a 429 (Too Many Requests) HTTP status code and response like this:
+
+{% highlight text %}
+{"meta":{"error_type":"OAuthRateLimitException","code":429,"error_message":"The maximum number of requests per hour has been exceeded."}}
+{% endhighlight %}
+
+If you are building a request intensive solution, you should keep an eye on the rate limit and ensure it is not exceeded. These limits are always large enough to accommodate whatever you are building. Even when an API does not rate limit or mention it, making too many calls to the API should be avoided. This will likely get the client blocked by the provider.

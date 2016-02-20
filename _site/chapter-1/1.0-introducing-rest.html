@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="@kehers">
+  <meta name="twitter:title" content="1.0. Introducing REST">
+  <meta name="twitter:description" content="An API (Application Programming Interface) is a collection of features that detail data interaction between applications. APIs are why you can copy text from your browser to an editor on your compu...">
+  <meta name="twitter:creator" content="@kehers">
+  <title>1.0. Introducing REST</title>
+  <link href='https://fonts.googleapis.com/css?family=Libre+Baskerville:400,700' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" href="/assets/css/normalize.css">
+  <link rel="stylesheet" href="/assets/css/skeleton.css">
+  <link rel="stylesheet" href="/assets/css/custom.css">
+  <link rel="stylesheet" href="/assets/css/zenburn.css" />
+</head>
+<body>
+
+<div class="container">
+  <header>
+    <div class="row">
+      <div id="logo" class="three columns">
+        <div id="menu">☰</div>
+      </div>
+    </div>
+  </header>
+  <div class="row">
+    <div class="six offset-by-three columns">
+      <article>
+        <h5>Chapter 1</h5>
+        <h1 class="title">1.0. Introducing REST</h1>
+        <p>An API (Application Programming Interface) is a collection of features that detail data interaction between applications. APIs are why you can copy text from your browser to an editor on your computer; why your Foursquare mobile application can request GPS coordinates from your phone; and why you can use an entirely different twitter client that is not made by Twitter.</p>
+
+<p>The examples are endless. They happen in every part of computing. On the web, you can use APIs to request data from or send data to any of the platforms that support them. Consequently, you can use APIs to extend services these platforms provide or build custom solutions on them, whether it is to download all pictures you’ve liked on Instagram, add the birthdays of your Facebook friends to your Google Calendar or listen to the Twitter stream for tweets containing the words ‘<strong>discount</strong>’ or ‘<strong>coupon</strong>’.</p>
+
+<p>On the web, there are different ways this data exchange can be carried out. There are very detailed standards like SOAP (Simple Object Access Protocol). And there is REST.</p>
+
+<p>REST is an acronym for <strong>Re</strong>presentational <strong>S</strong>tate <strong>T</strong>ransfer. The phrase was coined by Roy Fielding, one of the principal authors of HTTP, in his Ph.D dissertation<sup id="fnref:1"><a href="#fn:1" class="footnote">1</a></sup>. Unlike SOAP, it is not a standard. It does not have detailed technical specifications. It is simply a design procedure, that shows how data communication can be achieved using same principles used by web browsers for content delivery. In simpler words, how do we use HTTP for data transfer like browsers do? So it is called an architectural style instead.</p>
+
+<p>The term <em>Representational State Transfer</em> means transferring the representation of the state of an object of interest. This object of interest is called the <strong>resource</strong>. Imagine I need information about the blog: <code class="highlighter-rouge">good.tumblr.com</code>. I can send a request to Tumblr, the way a browser will, through the URL:</p>
+
+<figure class="highlight"><pre><code class="language-text" data-lang="text">https://api.tumblr.com/v2/blog/good.tumblr.com/info</code></pre></figure>
+
+<p>(Go ahead, type that in your web browser. Remember, REST uses same principles used by web browsers).</p>
+
+<p>Tumblr will then return a representation of the blog’s state like this (line breaks added for clarity):</p>
+
+<figure class="highlight"><pre><code class="language-json" data-lang="json"><span class="p">{</span><span class="w">
+  </span><span class="nt">"meta"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="mi">200</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"msg"</span><span class="p">:</span><span class="w"> </span><span class="s2">"OK"</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="nt">"response"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nt">"blog"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nt">"title"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"good"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"posts"</span><span class="p">:</span><span class="w"> </span><span class="mi">2455</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"url"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http:\/\/good.tumblr.com\/"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"updated"</span><span class="p">:</span><span class="w"> </span><span class="mi">1439923053</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"(removed for brevity)"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"is_nsfw"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"ask"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"ask_page_title"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Ask GOOD a question"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"ask_anon"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"uuid"</span><span class="p">:</span><span class="w"> </span><span class="s2">"good.tumblr.com"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"share_likes"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"likes"</span><span class="p">:</span><span class="w"> </span><span class="mi">430</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span></code></pre></figure>
+
+<p>It is that simple. Every necessary data request, update, user authentication and interaction is carried out over HTTP the same way it done on web browsers. In fact, as you can see, all you need to access some REST APIs is a web browser. This makes REST easy to understand, implement and document, and has made it de facto for all major web platforms - Google, Facebook, Twitter, Yahoo, just name it.</p>
+
+<div class="footnotes">
+  <ol>
+    <li id="fn:1">
+      <p>Architectural Styles and the Design of Network-based Software Architectures: <a href="https://www.ics.uci.edu/~fielding/pubs/dissertation/top.htm">https://www.ics.uci.edu/~fielding/pubs/dissertation/top.htm</a> <a href="#fnref:1" class="reversefootnote">&#8617;</a></p>
+    </li>
+  </ol>
+</div>
+
+      </article>
+    </div>
+  </div>
+</div>
+<div class="colophon">
+  <div class="container">
+    <div class="row">
+      <div class="six offset-by-three columns">
+        <ul class="pagination">
+        
+        
+        <li class="six columns m-t-20 prev"></li>
+        <li class="six columns m-t-20 next"><a href="/chapter-2/2.0-a-second-look-at-http.html">2.0. A second look at HTTP</a></li>
+        </ul>
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+          var disqus_shortname = 'kehers';
+          (function() {
+              var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+              dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+              (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+          })();
+        </script>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="container">
+    <div class="row">
+      <div class="six offset-by-three columns">
+        <nav>
+          <li><a href="/">home</a></li>
+          <li><a href="http://gum.co/Sxoj" class="bordered">Download the book. Free</a></li>
+        </nav>
+        <p>&copy; 2016. Opeyemi Obembe. All rights reserved.</p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script type="text/javascript" src="/assets/js/menu.js"></script>
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+ga('create', 'UA-53373832-1', 'auto');
+ga('send', 'pageview');
+</script>
+
+</body>
+</html>

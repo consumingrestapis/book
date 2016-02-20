@@ -1,0 +1,56 @@
+---
+published: true
+title: 3.3. Errors
+category: Chapter-3
+layout: post
+---
+Things can go wrong; a call to a wrong API endpoint, use of a wrong request method (like using GET instead of POST), missing parameters, wrong authentication details, etc. When this happens, the REST API should let you know. In most cases, the REST API will send back an error code and message. Most REST APIs use the standard HTTP status codes we talked about earlier. They are returned in the status line with the detailed error message returned as the response body.
+
+Here is an example with the 500px[^1] API
+
+{% highlight text %}
+GET /v1/photos?feature=popular HTTP/1.1
+Host: api.500px.com
+
+HTTP/1.1 401 Unauthorized
+Date: Tue, 06 Oct 2015 09:24:39 GMT
+Content-Type: application/json; charset=utf-8
+Transfer-Encoding: chunked
+Connection: keep-alive
+Status: 401 Unauthorized
+Server: api10
+{% endhighlight %}
+{% highlight json %}
+{
+  "error": "Consumer key missing.",
+  "status": 401
+}
+{% endhighlight %}
+
+500px API returns a `401 Unauthorized` HTTP status and a JSON formatted error message with the 401 error code and the exact error reason. APIs that return standard HTTP status codes in the response status line may also include non-standard codes in the response body. An example is Twitter. A request to an API resource that does not exist will return a 404 HTTP status code in the status line but a code **34** in the JSON response:
+
+{% highlight text %}
+{"errors":[{"message":"Sorry, that page does not exist","code":34}]}
+{% endhighlight %}
+
+Some APIs don't use standard HTTP status codes either. When there are errors, the HTTP status still reads `200 OK` but the result body will contain the non-HTTP code and detailed message. An example is Flickr.
+
+{% highlight text %}
+GET /services/rest/?method=flickr.test.echo HTTP/1.1
+Host: api.flickr.com
+
+HTTP/1.1 200 OK
+Date: Wed, 07 Oct 2015 09:57:11 GMT
+Content-Type: text/xml; charset=utf-8
+Content-Length: 132
+{% endhighlight %}
+{% highlight xml %}
+<?xml version="1.0" encoding="utf-8" ?>
+<rsp stat="fail">
+    <err code="100" msg="Invalid API Key (Key has invalid format)" />
+</rsp>
+{% endhighlight %}
+
+When developing API solutions, you need to make allowance for these error cases. You need to understand how errors are returned by the provider and build to be able to capture and interpret this to your users in a subtle way.
+
+[^1]: 500px.com is a photo sharing and discovery community. The API documentation is available on Github here: [https://github.com/500px/api-documentation](https://github.com/500px/api-documentation)

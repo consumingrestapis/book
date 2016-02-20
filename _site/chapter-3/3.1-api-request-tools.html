@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="@kehers">
+  <meta name="twitter:title" content="3.1. API Request tools">
+  <meta name="twitter:description" content="cURL (Client URL library)
+
+cURL is a command line tool and library for data transfer. It supports a wide range of protocols including HTTP, FTP, SMTP and IMAP.
+
+cURL from the command line is an eas...">
+  <meta name="twitter:creator" content="@kehers">
+  <title>3.1. API Request tools</title>
+  <link href='https://fonts.googleapis.com/css?family=Libre+Baskerville:400,700' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" href="/assets/css/normalize.css">
+  <link rel="stylesheet" href="/assets/css/skeleton.css">
+  <link rel="stylesheet" href="/assets/css/custom.css">
+  <link rel="stylesheet" href="/assets/css/zenburn.css" />
+</head>
+<body>
+
+<div class="container">
+  <header>
+    <div class="row">
+      <div id="logo" class="three columns">
+        <div id="menu">☰</div>
+      </div>
+    </div>
+  </header>
+  <div class="row">
+    <div class="six offset-by-three columns">
+      <article>
+        <h5>Chapter 3</h5>
+        <h1 class="title">3.1. API Request tools</h1>
+        <h4 id="curl-client-url-library">cURL (Client URL library)</h4>
+
+<p>cURL is a command line tool and library for data transfer. It supports a wide range of protocols including HTTP, FTP, SMTP and IMAP.</p>
+
+<p>cURL from the command line is an easy way to test and run API calls.</p>
+
+<p>The first thing you want to be sure of is that you have cURL installed on your system. If you run on OS X (Mac) or a Linux OS, you most probably have cURL preinstalled. A quick way to check is to open your console and run:</p>
+
+<p><code class="highlighter-rouge">
+curl -V
+</code></p>
+
+<p>from the command line. That is uppercase <strong>V</strong> by the way. The <strong>V</strong> is an option character that represents <em>version</em>. They are also called flags and are case sensitive. The command should output your cURL version number. If you get an ‘<em>unrecognized command</em>’ error, you don’t have cURL installed.</p>
+
+<p>To install on Mac or Linux,</p>
+
+<ol>
+  <li>Download the source from <a href="http://curl.haxx.se/download.html">http://curl.haxx.se/download.html</a></li>
+  <li>Open your console and change to the directory the file was downloaded to</li>
+  <li>
+    <p>Extract the compressed file  </p>
+
+    <p><code class="highlighter-rouge">
+ tar zxf curl-7.46.0.tar.gz  
+</code></p>
+
+    <p>(Rename curl-7.46.0.tar.gz to the compressed source file you get to download)</p>
+  </li>
+  <li>
+    <p>Change directory to the extracted directory  </p>
+
+    <p><code class="highlighter-rouge">
+ cd curl-7.46.0 
+</code></p>
+  </li>
+  <li>Run the make file and install   <br />
+ <code class="highlighter-rouge">
+ make &amp;&amp; make install
+</code></li>
+</ol>
+
+<p>For Windows, download the binary directly from <a href="http://curl.haxx.se/download.html">http://curl.haxx.se/download.html</a> (down the page). Once you extract the file, you will need to add the directory containing the curl.exe file to your PATH environmental variable so that you won’t have to always change directory to the curl.exe directory every time you need to run a cURL command. I recommend you move this directory to a location more permanent - so not your Desktop or Downloads folder.</p>
+
+<p>To set the PATH:</p>
+
+<ol>
+  <li>Open your <strong>Control Panel</strong>, go to <strong>System</strong>, <strong>Advanced system settings</strong> and click <strong>Environmental Variables</strong>. Scroll down the <strong>System variable</strong> list till you get to <strong>Path</strong>.</li>
+  <li>Double click on it. You should get the <strong>Edit System Variable</strong> popup.</li>
+  <li>Place your cursor at the end of the <strong>Variable value</strong> content (if not there already). We will be adding to the existing content.</li>
+  <li>Enter a semi-colon followed by the full path to the directory containing your curl.exe. If for example, I moved it to my Documents folder and the curl.exe directory is <code class="highlighter-rouge">curl_7_46_0_openssl_nghttp2_x64</code>, I simply add this to the content:</li>
+</ol>
+
+<figure class="highlight"><pre><code class="language-text" data-lang="text">  ;C\Users\kehers\Documents\curl_7_46_0_openssl_ng http2_x64  </code></pre></figure>
+
+<p>Don’t forget to add the semi-colon.</p>
+
+<h5 id="making-a-get-request-with-curl">1. Making a GET request with cURL</h5>
+
+<p>To make a GET request, open your console and type <code class="highlighter-rouge">curl {url}</code></p>
+
+<figure class="highlight"><pre><code class="language-text" data-lang="text">curl https://api.postcodes.io/postcodes/OX49\ 5NU</code></pre></figure>
+
+<p>(I used the backslash after OX49 to escape the space before 5NU. Another way I could have done this is to quote the endpoint like this: <code class="highlighter-rouge">curl 'https://api.postcodes.io/postcodes/OX49 5NU'</code>)</p>
+
+<p>cURL will return the response body. You should see something like this:</p>
+
+<figure class="highlight"><pre><code class="language-json" data-lang="json"><span class="p">{</span><span class="w">
+  </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="mi">200</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"result"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nt">"postcode"</span><span class="p">:</span><span class="w"> </span><span class="s2">"OX49 5NU"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"quality"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"eastings"</span><span class="p">:</span><span class="w"> </span><span class="mi">464435</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"northings"</span><span class="p">:</span><span class="w"> </span><span class="mi">195686</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"country"</span><span class="p">:</span><span class="w"> </span><span class="s2">"England"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"nhs_ha"</span><span class="p">:</span><span class="w"> </span><span class="s2">"South Central"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"longitude"</span><span class="p">:</span><span class="w"> </span><span class="mf">-1.06993881320412</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"latitude"</span><span class="p">:</span><span class="w"> </span><span class="mf">51.6562791294687</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"parliamentary_constituency"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Henley"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"european_electoral_region"</span><span class="p">:</span><span class="w"> </span><span class="s2">"South East"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"primary_care_trust"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Oxfordshire"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"region"</span><span class="p">:</span><span class="w"> </span><span class="s2">"South East"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"lsoa"</span><span class="p">:</span><span class="w"> </span><span class="s2">"South Oxfordshire 011B"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"msoa"</span><span class="p">:</span><span class="w"> </span><span class="s2">"South Oxfordshire 011"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"incode"</span><span class="p">:</span><span class="w"> </span><span class="s2">"5NU"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"outcode"</span><span class="p">:</span><span class="w"> </span><span class="s2">"OX49"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"admin_district"</span><span class="p">:</span><span class="w"> </span><span class="s2">"South Oxfordshire"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"parish"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Brightwell Baldwin"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"admin_county"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Oxfordshire"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"admin_ward"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Chalgrove"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"ccg"</span><span class="p">:</span><span class="w"> </span><span class="s2">"NHS Oxfordshire"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"nuts"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Oxfordshire"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"codes"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nt">"admin_district"</span><span class="p">:</span><span class="w"> </span><span class="s2">"E07000179"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"admin_county"</span><span class="p">:</span><span class="w"> </span><span class="s2">"E10000025"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"admin_ward"</span><span class="p">:</span><span class="w"> </span><span class="s2">"E05009735"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"parish"</span><span class="p">:</span><span class="w"> </span><span class="s2">"E04008109"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"ccg"</span><span class="p">:</span><span class="w"> </span><span class="s2">"E38000136"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"nuts"</span><span class="p">:</span><span class="w"> </span><span class="s2">"UKJ14"</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span></code></pre></figure>
+
+<p>If you want to see the full response including the status and header lines, add an <strong>i</strong> flag.</p>
+
+<figure class="highlight"><pre><code class="language-text" data-lang="text">curl -i https://api.postcodes.io/postcodes/OX49\ 5NU
+
+HTTP/1.1 200 OK
+Server: nginx/1.8.0
+Date: Mon, 05 Oct 2015 06:54:51 GMT
+Content-Type: application/json; charset=utf-8
+Content-Length: 741
+Connection: keep-alive
+Access-Control-Allow-Origin: *
+Vary: Origin
+ETag: W/"2e5-e6a2f46b"</code></pre></figure>
+
+<figure class="highlight"><pre><code class="language-json" data-lang="json"><span class="p">{</span><span class="w">
+  </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="mi">200</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"result"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nt">"postcode"</span><span class="p">:</span><span class="w"> </span><span class="s2">"OX49 5NU"</span><span class="p">,</span><span class="w">
+    </span><span class="err">...</span><span class="w">
+  </span><span class="err">}</span><span class="w">
+</span><span class="p">}</span></code></pre></figure>
+
+<h5 id="making-a-post-request-with-curl">2. Making a POST request with cURL</h5>
+
+<p>Let’s do a bulk post code lookup. First, we have to tell cURL we will be doing a POST request by using the <strong>X</strong> flag. To add the POST data, we use the <strong>d</strong> flag. To make a bulk post code lookup, postcodes.io requires a JSON object containing an array of the post codes. If we therefore have the post codes <code class="highlighter-rouge">PR3 0SG</code> and <code class="highlighter-rouge">OX49 5NU</code>, we have to construct a JSON object like this as our POST data:</p>
+
+<figure class="highlight"><pre><code class="language-json" data-lang="json"><span class="p">{</span><span class="w">
+  </span><span class="nt">"postcodes"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"PR3 0SG"</span><span class="p">,</span><span class="w"> </span><span class="s2">"OX49 5NU"</span><span class="p">]</span><span class="w">
+</span><span class="p">}</span></code></pre></figure>
+
+<p>One more thing, we need to add a content-type header to say the POST data we are sending is JSON. For that, we use the <strong>H</strong> flag.</p>
+
+<figure class="highlight"><pre><code class="language-text" data-lang="text">curl -X POST -H 'content-type: application/json'
+  -d '{"postcodes" : ["PR3 0SG", "OX49 5NU"]}'
+  https://api.postcodes.io/postcodes</code></pre></figure>
+
+<figure class="highlight"><pre><code class="language-json" data-lang="json"><span class="p">{</span><span class="w">
+  </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="mi">200</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"result"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="nt">"query"</span><span class="p">:</span><span class="w"> </span><span class="s2">"PR3 0SG"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"result"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nt">"postcode"</span><span class="p">:</span><span class="w"> </span><span class="s2">"PR3 0SG"</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"quality"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"eastings"</span><span class="p">:</span><span class="w"> </span><span class="mi">351009</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"northings"</span><span class="p">:</span><span class="w"> </span><span class="mi">440284</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"country"</span><span class="p">:</span><span class="w"> </span><span class="s2">"England"</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"nhs_ha"</span><span class="p">:</span><span class="w"> </span><span class="s2">"North West"</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"longitude"</span><span class="p">:</span><span class="w"> </span><span class="mf">-2.74629729010372</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"latitude"</span><span class="p">:</span><span class="w"> </span><span class="mf">53.8564621514511</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"parliamentary_constituency"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Wyre and Preston North"</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"european_electoral_region"</span><span class="p">:</span><span class="w"> </span><span class="s2">"North West"</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"primary_care_trust"</span><span class="p">:</span><span class="w"> </span><span class="s2">"North Lancashire Teaching"</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"region"</span><span class="p">:</span><span class="w"> </span><span class="s2">"North West"</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"lsoa"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Wyre 006A"</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"msoa"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Wyre 006"</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"incode"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0SG"</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"outcode"</span><span class="p">:</span><span class="w"> </span><span class="s2">"PR3"</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"admin_district"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Wyre"</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"parish"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Myerscough and Bilsborrow"</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"admin_county"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Lancashire"</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"admin_ward"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Brock with Catterall"</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"ccg"</span><span class="p">:</span><span class="w"> </span><span class="s2">"NHS Lancashire North"</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"nuts"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Lancaster and Wyre"</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"codes"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nt">"admin_district"</span><span class="p">:</span><span class="w"> </span><span class="s2">"E07000128"</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"admin_county"</span><span class="p">:</span><span class="w"> </span><span class="s2">"E10000017"</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"admin_ward"</span><span class="p">:</span><span class="w"> </span><span class="s2">"E05009934"</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"parish"</span><span class="p">:</span><span class="w"> </span><span class="s2">"E04005340"</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"ccg"</span><span class="p">:</span><span class="w"> </span><span class="s2">"E38000093"</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"nuts"</span><span class="p">:</span><span class="w"> </span><span class="s2">"UKD44"</span><span class="w">
+        </span><span class="p">}</span><span class="w">
+      </span><span class="p">}</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="nt">"query"</span><span class="p">:</span><span class="w"> </span><span class="s2">"OX49 5NU"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"result"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nt">"postcode"</span><span class="p">:</span><span class="w"> </span><span class="s2">"OX49 5NU"</span><span class="p">,</span><span class="w">
+        </span><span class="err">...</span><span class="w">
+      </span><span class="err">}</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">]</span><span class="w">
+</span><span class="p">}</span></code></pre></figure>
+
+<p>It’s straightforward, isn’t it?</p>
+
+<p>There is so much more you can do with cURL. You will see more examples as we move on. To recap, here are the cURL flags we looked at:</p>
+
+<ul>
+  <li>V - Shows version information.</li>
+  <li>X - Specifies a custom HTTP method to use.</li>
+  <li>d - Specifies data to be sent for the request. By default, the data is sent to the server using the content-type application/x-www-form-urlencoded.</li>
+  <li>i - Includes the HTTP-header in the response output.</li>
+  <li>H - HTTP headers to include in the request.</li>
+</ul>
+
+<p>Note that the flags are case-sensitive.</p>
+
+<p>-</p>
+
+<h4 id="online-tools">Online Tools</h4>
+
+<p>There are online tools we can also use for API calls. One I really recommend is Postman. Postman is a Google Chrome extension for making API requests. Visit the website (<a href="http://getpostman.com/">getpostman.com</a>) and follow the Get it link to install it from the Chrome store.</p>
+
+<p>Postman is easy to use. You add the request URL, HTTP method and send your request.</p>
+
+<p>￼
+And there is more you can do. You can set headers, add message body and set authorization method and parameters.</p>
+
+<p>If you don’t use Google Chrome, <a href="http://hurl.it">hurl.it</a> is a good online tool you can use as an alternative. It supports different HTTP methods, authentication and you can enter custom headers.</p>
+
+<p>￼</p>
+
+      </article>
+    </div>
+  </div>
+</div>
+<div class="colophon">
+  <div class="container">
+    <div class="row">
+      <div class="six offset-by-three columns">
+        <ul class="pagination">
+        
+        
+        <li class="six columns m-t-20 prev"><a href="/chapter-3/3.0-anatomy-of-an-api-call.html">3.0. Anatomy of an API call</a></li>
+        <li class="six columns m-t-20 next"><a href="/chapter-3/3.2-response-formats.html">3.2. Response formats</a></li>
+        </ul>
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+          var disqus_shortname = 'kehers';
+          (function() {
+              var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+              dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+              (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+          })();
+        </script>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="container">
+    <div class="row">
+      <div class="six offset-by-three columns">
+        <nav>
+          <li><a href="/">home</a></li>
+          <li><a href="http://gum.co/Sxoj" class="bordered">Download the book. Free</a></li>
+        </nav>
+        <p>&copy; 2016. Opeyemi Obembe. All rights reserved.</p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script type="text/javascript" src="/assets/js/menu.js"></script>
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+ga('create', 'UA-53373832-1', 'auto');
+ga('send', 'pageview');
+</script>
+
+</body>
+</html>

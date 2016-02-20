@@ -1,0 +1,356 @@
+---
+published: true
+title: 4.1. OAuth 1.0
+category: Chapter-4
+layout: post
+---
+The OAuth 1.0 protocol[^1] has different implementations depending on the provider. Twitter for example has 3-legged, PIN-Based, xAuth and Echo. But what we will be looking at is the full flow, also called the 3-legged OAuth. It is so called because it is divided into three steps.
+
+1. The consumer obtains a temporary token called the **Request Token** from the provider through a **Request Token URL**
+2. The user is redirected to the provider to authorize the request token. The URL he is redirected to is called the **Authorize URL**
+3. The user is redirected back with the authorized request token. The consumer then sends the Request Token to the provider in exchange for an **Access Token** through an **Access Token URL**
+
+The URLs involved in this process are called the **OAuth endpoints**. Here are Tumblr’s OAuth endpoints[^2]:
+If the provider offers other implementations or changes to the standard OAuth 1.0 specification, it will be documented. The changes are always very little and you can easily adapt the standard flow to it.
+
+Now, let's break down the steps.
+
+####1. Request Temporary Credentials (Request Token)
+
+The first step is that the consumer requests a temporary credential (request token) from the provider. Here are the parameters to be sent for the request:
+
+a. oauth_callback   
+b. oauth_consumer_key   
+c. oauth_nonce   
+d. oauth_signature_method   
+e. oauth_timestamp   
+f. oauth_version   
+g. oauth_signature
+
+I will explain them one after the other.
+
+**a. oauth_callback**   
+A URL (yours) the provider will redirect the user to after the authorization step (the second step in the flow) is completed.
+
+**b. oauth_consumer_key**   
+The consumer key provided during the OAuth registration.
+
+**c. oauth_nonce**   
+A random string that MUST be unique across requests.
+
+**d. oauth_signature_method**   
+The signature method for signing the request. Requests are signed with any of the three methods: **HMAC-SHA1**, **RSA-SHA1** and **PLAINTEXT**. Signing is done to ensure requests are from where they claim to come from. The API documentation will specify the supported method. Most APIs support only HMAC-SHA1.
+
+**e. oauth_timestamp**   
+A timestamp expressed in the number of seconds since January 1, 1970 00:00:00 GMT.
+
+**f. oauth_version**   
+This is optional but if you are including it in your request, it must be "**1.0**".
+
+**g. oauth_signature**   
+A signature generated based on the signature method. Our focus will be on the HMAC-SHA1 signature method as this is the most common signature method providers support. We will still look at the other methods though.
+
+For the PLAINTEXT signature method, the signature is simply the concatenated encoded value of the consumer secret and token secret.
+
+{% highlight text %}
+signature = percent-encode(consumer_secret)+'&'+percent-encode(token_secret)
+{% endhighlight %}
+
+If there is no token secret yet, as in this case, the signature becomes:
+
+{% highlight text %}
+percent-encode(consumer_secret)+'&'
+{% endhighlight %}
+
+If for example our consumer secret is `RR1ElZScYWhPBT9kb1KhX2uEAY`, the signature becomes:
+
+{% highlight text %}
+signature = RR1ElZScYWhPBT9kb1KhX2uEAY&
+{% endhighlight %}
+
+Generating HMAC-SHA1 and RSA-SHA1 signature is a little more complex. Both involves generating a **signature base string** first. Let’s walk through by assuming a consumer.
+
+1. Assemble the request parameters
+
+    oauth_callback: 'http://tumblr2jekyll.app/callback'
+    oauth_version: '1.0'
+    oauth_nonce: '402057506'
+    oauth_signature_method: 'HMAC-SHA1'
+    oauth_consumer_key: 'f96f91fb6e3d8a54aa'
+    oauth_timestamp: '1444806443'
+
+2. Percent-encode[^3] the parameter names and values and sort the parameters alphabetically by the encoded key
+
+    oauth_callback: 'http%3A%2F%2Ftumblr2jekyll.app
+    						%2Fcallback'
+    oauth_consumer_key: 'f96f91fb6e3d8a54aa'
+    oauth_nonce: '402057506'
+    oauth_signature_method: 'HMAC-SHA1'
+    oauth_timestamp: '1444806443'
+    oauth_version: '1.0'
+
+3. Create a query string from the encoded parameters. Remember, this is done by going through the name-value pairs, appending the name with ‘=’ character, the value, and ‘**&**’ character if there are more name-value pairs. This is the **parameter string**.
+
+    oauth_callback=http%3A%2F%2Ftumblr2jekyll.app%2Fcallback&oauth_consumer_key=f96f91fb6e3d8a54aa&oauth_nonce=402057506&oauth_signature_method=HMAC-SHA1&oauth_timestamp=1444806443&oauth_version=1.0
+
+4. Concatenate the HTTP method to be used (in uppercase), the percent-encoded request endpoint and the percent-encoded parameter string with ‘**&**’ character. This is the **signature base string**. Our request method is POST, the request endpoint is `https://tumblr.com/oauth/request_token`. The request endpoint percent-encoded is `https%3A%2F%2Ftumblr.com%2Foauth%2Frequest_token`
+
+    POST&https%3A%2F%2Ftumblr.com%2Foauth%2Frequest_token&oauth_callback%3Dhttp%253A%252F%252Ftumblr2jekyll.app%252Fcallback%26oauth_consumer_key%3Df96f91fb6e3d8a54aa%26oauth_nonce%3D402057506%26oauth_signature_method%3DHMAC-SHA1%26oauth_timestamp%3D1444806443%26oauth_version%3D1.0
+
+5. Sign the signature base string using the signature method. For RSA-SHA1, here is how it is done:
+
+    key = Client’s RSA private key
+    signature = base64-encode(RSA-SHA1(key,
+    				signature_base_string))
+
+    For HMAC-SHA1, our focus, here is how it is done:
+
+    key = percent-encode(consumer_secret)+'&'+percent-encode(token_secret)
+    signature = base64-encode(HMAC-SHA1(key,
+    				signature_base_string))
+
+    Notice how the key is same as the signature in the PLAINTEXT method. And since we have no token secret yet, it is same as:
+
+    key = percent-encode(consumer_secret)+'&'
+
+    Given our consumer secret as RR1ElZScYWhPBT9kb1KhX2uEAY, our key becomes:
+
+    key = percent-encode(RR1ElZScYWhPBT9kb1KhX2uEAY)+'&'
+        = RR1ElZScYWhPBT9kb1KhX2uEAY&
+
+    and our signature[^4]:
+
+    signature = base64-encode(HMAC-SHA1('RR1ElZScYWhPBT9kb1KhX2uEAY&', 'POST&https%3A%2F%2Ftumblr.com%2Foauth%2Frequest_token&oauth_callback%3Dhttp%253A%252F%252Ftumblr2jekyll.app%252Fcallback%26oauth_consumer_key%3Df96f91fb6e3d8a54aa%26oauth_nonce%3D402057506%26oauth_signature_method%3DHMAC-SHA1%26oauth_timestamp%3D1444806443%26oauth_version%3D1.0'))
+                             = x/VRlVq4+3FnWBEVQL5OiBGCapY=
+
+Now that we have all our OAuth parameters, including the `oauth_signature`, we can send them to the request token URL. There are three ways this can be done - through an Authorization header, POST body parameter or URI query parameter of a GET request. If the API does not support all methods, the document will mention the supported method(s). Tumblr for example supports using an Authorization header only.
+
+The format for the Authorization header is:
+
+{% highlight text %}
+Authorization: OAuth parameter-list
+{% endhighlight %}
+
+Here is how the parameter list is created:
+
+1. The parameter names and values are percent-encoded
+2. The parameter name is followed by a ‘=’ character, and the value enclosed in quotes
+3. This is repeated for other parameters.
+4. The parameters are separated with a ‘,’ character
+
+This is what the Authorization header for our request will look like. I have added line breaks for clarity.
+
+{% highlight text %}
+Authorization: OAuth
+	oauth_callback="http%3A%2F%2Ftumblr2jekyll.app%2Fcallback",
+	oauth_consumer_key="f96f91fb6e3d8a54aa",
+	oauth_nonce="402057506",
+	oauth_signature="x%2FVRlVq4%2B3FnWBEVQL5OiBGCa
+		p%3D",
+	oauth_signature_method="HMAC-SHA1",
+	oauth_timestamp="1444806443",
+	oauth_version="1.0"
+{% endhighlight %}
+
+If we were to use GET, this is what the request would look like:
+
+{% highlight text %}
+GET /oauth/request_token?oauth_callback=http%3A%2F%
+  2Ftumblr2jekyll.app%2Fcallback&oauth_consumer_
+  key=f96f91fb6e3d8a54aa&oauth_nonce=402057506&
+  oauth_signature=x%2FVRlVq4%2B3FnWBEVQL5OiBGCapY %3D&oauth_signature_method=HMAC-SHA1&oauth_
+  timestamp=1444806443&oauth_version=1.0
+Host: tumblr.com
+{% endhighlight %}
+
+And the POST version:
+
+{% highlight text %}
+POST /oauth/request_token
+Host: tumblr.com
+Content-Type: application/x-www-form-urlencoded
+
+oauth_callback=http%3A%2F%2Ftumblr2jekyll.app%2Fcallback&oauth_consumer_key=f96f91fb6e3d8a54aa&oauth_nonce=402057506&oauth_signature=x%2FVRlVq4%2B3F
+nWBEVQL5OiBGCapY%3D&oauth_signature_method=HMAC-SHA1&oauth_timestamp=1444806443&oauth_version=1.0
+{% endhighlight %}
+
+Remember though, the parameter names and values must be percent-encoded. Also note that Tumblr supports only the Authorization header method of making an OAuth request. I only added the GET and POST requests to show how the requests can be made using these methods.
+
+####2. Authorization
+
+Step 1 above will return `oauth_token`, `oauth_token_secret` and `oauth_callback_confirmed` in this response form:
+
+{% highlight text %}
+oauth_token=hdk48Djdsa&oauth_token_secret=xyz4992k83j47x0b&oauth_callback_confirmed=true
+{% endhighlight %}
+
+The consumer then parses the returned body and redirects the user to the authorization endpoint with the `oauth_token` as a URL query parameter. We have a token secret now (`oauth_token_secret`) and will be needing it in the next step. But for now, we redirect the user to the authorization URL.
+
+{% highlight text %}
+https://www.tumblr.com/oauth/authorize?oauth_token=hdk48Djdsa
+{% endhighlight %}
+
+The authorize endpoint tells the user the consumer wants his authorization. If he accepts, the provider redirects the user back to the specified oauth_callback with the parameters `oauth_token` and `oauth_verifier` passed through the URL query string.
+
+{% highlight text %}
+http://tumblr2jekyll.app/callback?oauth_token= to2bQj80kBybR1VJMbkZ&oauth_verifier=vK9mab4qgKnnr
+{% endhighlight %}
+
+####3. Request Token Credentials (Access Token)
+
+Now that the user has been redirected back to the consumer's `oauth_callback`, the consumer exchanges the `oauth_token` for an **access token**. The process is very similar to the first step where we requested the **request token**. Continuing with our example consumer, the difference is that we will now add the parameters - `oauth_token` and `oauth_verifier` (returned by the provider in step 2) and will remove the `oauth_callback` parameter. Our focus is on the HMAC-SHA1 method so we will only calculate the signature based on that.
+
+Our OAuth parameters now become:
+
+a. oauth_consumer_key   
+b. oauth_nonce   
+c. oauth_signature_method   
+d. oauth_timestamp   
+e. oauth_version   
+**f. oauth_token**   
+**g. oauth_verifier**   
+h. oauth_signature   
+
+Using these parameters, we go over our signing process again.
+
+Here are our new parameters, sorted alphabetically and percent-encoded:
+
+{% highlight text %}
+oauth_consumer_key: 'f96f91fb6e3d8a54aa'
+oauth_nonce: '562f2518a4a6d'
+oauth_signature_method: 'HMAC-SHA1'
+oauth_timestamp: '1445930292'
+oauth_token: 'to2bQj80kBybR1VJMbkZ'
+oauth_verifier: 'vK9mab4qgKnnr'
+oauth_version: '1.0'
+{% endhighlight %}
+
+Our parameter string then becomes:
+
+{% highlight text %}
+oauth_consumer_key=f96f91fb6e3d8a54aa&oauth_nonce= 562f2518a4a6d&oauth_signature_method=HMAC-SHA1&oauth_timestamp=1445930292&oauth_token= to2bQj80kBybR1VJMbkZ&oauth_verifier= vK9mab4qgKnnr&oauth_version=1.0
+{% endhighlight %}
+
+Now that we have our parameter string, our request method as POST and our authorization URL as https://tumblr.com/oauth/access_token, we can calculate the signature just as before. Our signature base string becomes:
+
+{% highlight text %}
+POST&https%3A%2F%2Ftumblr.com%2Foauth%2Faccess_token&oauth_consumer_key%3Df96f91fb6e3d8a54aa%26oauth_nonce%3D%20562f2518a4a6d%26oauth_signature_method%3DHMAC-SHA1%26oauth_timestamp%3D%201445930292%26oauth_token%3D%20to2bQj80kBybR1VJMbkZ%26oauth_verifier%3D%20vK9mab4qgKnnr%26oauth_version%3D1.0
+{% endhighlight %}
+
+We have a token secret now. Remember the one from the last step? Yes, that. This changes our key.
+
+{% highlight text %}
+key = percent-encode(consumer_secret)+'&'+
+    percent-encode(token_secret)
+  = RR1ElZScYWhPBT9kb1KhX2uEAY&xyz4992k83j47x0b
+{% endhighlight %}
+
+Take it from here. Revisit the HMAC signature algorithm and try to calculate the signature yourself. This should be the result:
+`tUnoEFzrSUmQigRf8QUNCoVI0l4%3D`
+
+Again we generate our Authorization header as before:
+
+{% highlight text %}
+Authorization: OAuth
+  oauth_consumer_key="f96f91fb6e3d8a54aa",
+  oauth_nonce="562f2518a4a6d",
+  oauth_signature="tUnoEFzrSUmQigRf8QUNCoVI0l4%3D",
+  oauth_signature_method="HMAC-SHA1",
+  oauth_timestamp="1445930292",
+  oauth_token="to2bQj80kBybR1VJMbkZ",
+  oauth_verifier="vK9mab4qgKnnr",
+  oauth_version="1.0"
+{% endhighlight %}
+
+This will return the authorized access token and secret in the format
+
+{% highlight text %}
+oauth_token=xvz1evFS4wEEP&oauth_token_secret=MKPR9EyMZeS9weJA
+{% endhighlight %}
+
+Easy, right?
+
+-
+
+####Making authenticated requests
+
+Now that the consumer has the access token, all requests to API endpoints that require authorization must be signed with it. Signing the requests follows the same process as we’ve seen in the last two steps.
+
+Let’s see an example with the Tumblr API. Let’s retrieve the authenticated user’s dashboard. You can find the documentation for that here: [https://www.tumblr.com/docs/en/api/v2#m-ug-dashboard](https://www.tumblr.com/docs/en/api/v2#m-ug-dashboard). The request endpoint is `https://api.tumblr.com/v2/user/dashboard` and the required HTTP method is `GET`. There are some request parameters we can include. One of such is type. We will be using it to filter the request to show only posts of the type quote.
+
+Here are our application keys and token details:
+
+- Consumer key: `Re00jA4IJDxOnUSK`
+- Consumer secret: `PLt3TMUdw2pN9`
+- OAuth access token: `DT3agQyx5gv37saK`
+- OAuth token secret: `bqtyAQ8EmGg4M`
+
+The first step is to list our parameters. This will include the necessary request parameters and the OAuth parameters.
+
+1. `type`
+2. `oauth_consumer_key`
+3. `oauth_nonce`
+4. `oauth_signature_method`
+5. `oauth_timestamp`
+6. `oauth_version`
+7. `oauth_token`
+
+Next we sort, percent-encode and build our parameter string.
+
+{% highlight text %}
+GET&https%3A%2F%2Fapi.tumblr.com%2Fv2%2Fuser%2Fdashboard&oauth_consumer_key%3DRe00jA4IJDxOnUSK%26oauth_nonce%3D56354dc2d3380%26oauth_signature_
+method%3DHMAC-SHA1%26oauth_timestamp%3D1446333890
+%26oauth_token%3DDT3agQyx5gv37saK%26oauth_version%3D1.0%26type%3Dquote
+{% endhighlight %}
+
+We also calculate our key by concatenating the percent-encoded consumer secret and percent-encoded token secret with &.
+
+{% highlight text %}
+key = PLt3TMUdw2pN9&bqtyAQ8EmGg4M
+{% endhighlight %}
+
+And from this, we calculate our HMAC-SHA1 signature.
+
+{% highlight text %}
+/SdvxUkWh6uUAGoa2y3idefPWCM=
+{% endhighlight %}
+
+Just one more thing - build the Authorization header for the request.
+
+{% highlight text %}
+Authorization: OAuth
+  oauth_consumer_key="Re00jA4IJDxOnUSK",
+  oauth_token="DT3agQyx5gv37saK",
+  oauth_nonce="56354dc2d3380",
+  oauth_timestamp="1446333890",
+  oauth_signature_method="HMAC-SHA1",
+  oauth_version="1.0",
+  oauth_signature="%2FSdvxUkWh6uUAGoa2y3idefPWCM%3D"
+{% endhighlight %}
+
+Here is the full request:
+
+{% highlight text %}
+GET /v2/user/dashboard?type=quote HTTP/1.1
+Host: api.tumblr.com
+Authorization: OAuth oauth_consumer_key=
+"Re00jA4IJDxOnUSK", oauth_token="DT3agQyx5gv37saK", oauth_nonce="56354dc2d3380", oauth_timestamp=
+"1446333890", oauth_signature_method="HMAC-SHA1", oauth_version="1.0", oauth_signature=
+"%2FSdvxUkWh6uUAGoa2y3idefPWCM%3D"
+{% endhighlight %}
+
+Using cURL:
+
+{% highlight text %}
+curl https://api.tumblr.com/v2/user/dashboard?type=quote -H 'Authorization: OAuth oauth_consumer_key="Re00jA4IJDxOnUSK", oauth_token=
+"DT3agQyx5gv37saK", oauth_nonce="56354dc2d3380", oauth_timestamp="1446333890", oauth_signature_method
+="HMAC-SHA1", oauth_version="1.0", oauth_signature=
+"%2FSdvxUkWh6uUAGoa2y3idefPWCM%3D"'
+{% endhighlight %}
+
+Oauth.net and Flickr have these pictorial break down of the flow. It will help you understand and remember better.
+
+[^1]: RFC 5849: [http://tools.ietf.org/html/rfc5849](http://tools.ietf.org/html/rfc5849)
+[^2]: [https://www.tumblr.com/docs/en/api/v2#oauth](https://www.tumblr.com/docs/en/api/v2#oauth)
+[^3]: Here, spaces are encoded as **%20** and not as **+** as with URL encoding for the `application/x-www-form-urlencoded` content type
+[^4]: [http://oauth.googlecode.com/svn/code/javascript/example/signature.html](http://oauth.googlecode.com/svn/code/javascript/example/signature.html) and [http://nouncer.com/oauth/signature.html](http://nouncer.com/oauth/signature.html) are good online tools to test your signing process.

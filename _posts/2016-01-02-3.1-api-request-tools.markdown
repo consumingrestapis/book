@@ -1,0 +1,229 @@
+---
+published: true
+title: 3.1. API Request tools
+category: Chapter-3
+layout: post
+---
+####cURL (Client URL library)
+
+cURL is a command line tool and library for data transfer. It supports a wide range of protocols including HTTP, FTP, SMTP and IMAP.
+
+cURL from the command line is an easy way to test and run API calls.
+
+The first thing you want to be sure of is that you have cURL installed on your system. If you run on OS X (Mac) or a Linux OS, you most probably have cURL preinstalled. A quick way to check is to open your console and run:
+
+```
+curl -V
+```
+
+from the command line. That is uppercase **V** by the way. The **V** is an option character that represents *version*. They are also called flags and are case sensitive. The command should output your cURL version number. If you get an '*unrecognized command*' error, you don’t have cURL installed.
+
+To install on Mac or Linux,
+
+1. Download the source from [http://curl.haxx.se/download.html](http://curl.haxx.se/download.html)
+2. Open your console and change to the directory the file was downloaded to
+3. Extract the compressed file     
+
+    ```
+    tar zxf curl-7.46.0.tar.gz  
+    ```
+
+    (Rename curl-7.46.0.tar.gz to the compressed source file you get to download)
+
+4. Change directory to the extracted directory     
+    
+    ```
+    cd curl-7.46.0 
+    ```
+
+5. Run the make file and install     
+    ```
+    make && make install
+    ```
+
+For Windows, download the binary directly from [http://curl.haxx.se/download.html](http://curl.haxx.se/download.html) (down the page). Once you extract the file, you will need to add the directory containing the curl.exe file to your PATH environmental variable so that you won’t have to always change directory to the curl.exe directory every time you need to run a cURL command. I recommend you move this directory to a location more permanent - so not your Desktop or Downloads folder.
+
+To set the PATH:
+
+1. Open your **Control Panel**, go to **System**, **Advanced system settings** and click **Environmental Variables**. Scroll down the **System variable** list till you get to **Path**.
+2. Double click on it. You should get the **Edit System Variable** popup.
+3. Place your cursor at the end of the **Variable value** content (if not there already). We will be adding to the existing content.
+4. Enter a semi-colon followed by the full path to the directory containing your curl.exe. If for example, I moved it to my Documents folder and the curl.exe directory is `curl_7_46_0_openssl_nghttp2_x64`, I simply add this to the content:
+
+{% highlight text %}
+  ;C\Users\kehers\Documents\curl_7_46_0_openssl_ng http2_x64  
+{% endhighlight %}
+
+Don’t forget to add the semi-colon.
+
+#####1. Making a GET request with cURL
+
+To make a GET request, open your console and type `curl {url}`
+
+{% highlight text %}
+curl https://api.postcodes.io/postcodes/OX49\ 5NU
+{% endhighlight %}
+
+(I used the backslash after OX49 to escape the space before 5NU. Another way I could have done this is to quote the endpoint like this: `curl 'https://api.postcodes.io/postcodes/OX49 5NU'`)
+
+cURL will return the response body. You should see something like this:
+
+
+{% highlight json %}
+{
+  "status": 200,
+  "result": {
+    "postcode": "OX49 5NU",
+    "quality": 1,
+    "eastings": 464435,
+    "northings": 195686,
+    "country": "England",
+    "nhs_ha": "South Central",
+    "longitude": -1.06993881320412,
+    "latitude": 51.6562791294687,
+    "parliamentary_constituency": "Henley",
+    "european_electoral_region": "South East",
+    "primary_care_trust": "Oxfordshire",
+    "region": "South East",
+    "lsoa": "South Oxfordshire 011B",
+    "msoa": "South Oxfordshire 011",
+    "incode": "5NU",
+    "outcode": "OX49",
+    "admin_district": "South Oxfordshire",
+    "parish": "Brightwell Baldwin",
+    "admin_county": "Oxfordshire",
+    "admin_ward": "Chalgrove",
+    "ccg": "NHS Oxfordshire",
+    "nuts": "Oxfordshire",
+    "codes": {
+      "admin_district": "E07000179",
+      "admin_county": "E10000025",
+      "admin_ward": "E05009735",
+      "parish": "E04008109",
+      "ccg": "E38000136",
+      "nuts": "UKJ14"
+    }
+  }
+}
+{% endhighlight %}
+
+If you want to see the full response including the status and header lines, add an **i** flag.
+
+{% highlight text %}
+curl -i https://api.postcodes.io/postcodes/OX49\ 5NU
+
+HTTP/1.1 200 OK
+Server: nginx/1.8.0
+Date: Mon, 05 Oct 2015 06:54:51 GMT
+Content-Type: application/json; charset=utf-8
+Content-Length: 741
+Connection: keep-alive
+Access-Control-Allow-Origin: *
+Vary: Origin
+ETag: W/"2e5-e6a2f46b"
+{% endhighlight %}
+{% highlight json %}
+{
+  "status": 200,
+  "result": {
+    "postcode": "OX49 5NU",
+    ...
+  }
+}
+{% endhighlight %}
+
+
+#####2. Making a POST request with cURL
+
+Let's do a bulk post code lookup. First, we have to tell cURL we will be doing a POST request by using the **X** flag. To add the POST data, we use the **d** flag. To make a bulk post code lookup, postcodes.io requires a JSON object containing an array of the post codes. If we therefore have the post codes `PR3 0SG` and `OX49 5NU`, we have to construct a JSON object like this as our POST data:
+
+{% highlight json %}
+{
+  "postcodes" : ["PR3 0SG", "OX49 5NU"]
+}
+{% endhighlight %}
+
+
+One more thing, we need to add a content-type header to say the POST data we are sending is JSON. For that, we use the **H** flag.
+
+{% highlight text %}
+curl -X POST -H 'content-type: application/json'
+  -d '{"postcodes" : ["PR3 0SG", "OX49 5NU"]}'
+  https://api.postcodes.io/postcodes
+{% endhighlight %}
+{% highlight json %}
+{
+  "status": 200,
+  "result": [
+    {
+      "query": "PR3 0SG",
+      "result": {
+        "postcode": "PR3 0SG",
+        "quality": 1,
+        "eastings": 351009,
+        "northings": 440284,
+        "country": "England",
+        "nhs_ha": "North West",
+        "longitude": -2.74629729010372,
+        "latitude": 53.8564621514511,
+        "parliamentary_constituency": "Wyre and Preston North",
+        "european_electoral_region": "North West",
+        "primary_care_trust": "North Lancashire Teaching",
+        "region": "North West",
+        "lsoa": "Wyre 006A",
+        "msoa": "Wyre 006",
+        "incode": "0SG",
+        "outcode": "PR3",
+        "admin_district": "Wyre",
+        "parish": "Myerscough and Bilsborrow",
+        "admin_county": "Lancashire",
+        "admin_ward": "Brock with Catterall",
+        "ccg": "NHS Lancashire North",
+        "nuts": "Lancaster and Wyre",
+        "codes": {
+          "admin_district": "E07000128",
+          "admin_county": "E10000017",
+          "admin_ward": "E05009934",
+          "parish": "E04005340",
+          "ccg": "E38000093",
+          "nuts": "UKD44"
+        }
+      }
+    },
+    {
+      "query": "OX49 5NU",
+      "result": {
+        "postcode": "OX49 5NU",
+        ...
+      }
+    }
+  ]
+}
+{% endhighlight %}
+
+It’s straightforward, isn’t it?
+
+There is so much more you can do with cURL. You will see more examples as we move on. To recap, here are the cURL flags we looked at:
+
+- V - Shows version information.
+- X - Specifies a custom HTTP method to use.
+- d - Specifies data to be sent for the request. By default, the data is sent to the server using the content-type application/x-www-form-urlencoded.
+- i - Includes the HTTP-header in the response output.
+- H - HTTP headers to include in the request.
+
+Note that the flags are case-sensitive.
+
+-
+
+####Online Tools
+
+There are online tools we can also use for API calls. One I really recommend is Postman. Postman is a Google Chrome extension for making API requests. Visit the website ([getpostman.com](http://getpostman.com/)) and follow the Get it link to install it from the Chrome store.
+
+Postman is easy to use. You add the request URL, HTTP method and send your request.
+
+￼
+And there is more you can do. You can set headers, add message body and set authorization method and parameters.
+
+If you don't use Google Chrome, [hurl.it](http://hurl.it) is a good online tool you can use as an alternative. It supports different HTTP methods, authentication and you can enter custom headers.
+
+￼

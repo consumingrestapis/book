@@ -1,0 +1,6 @@
+gems: [jekyll-paginate]
+highlighter: rouge
+excerpt_separator: ""
+paginate: 30
+markdown: kramdown
+permalink: none

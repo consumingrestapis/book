@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="@kehers">
+  <meta name="twitter:title" content="2.1. HTTP Request">
+  <meta name="twitter:description" content="Here is what a request message looks like:
+
+GET /v2/blog/good.tumblr.com/info HTTP/1.1
+Host: api.tumblr.com
+Cache-Control: no-cache
+
+The first line, called the request line, contains three parts - ...">
+  <meta name="twitter:creator" content="@kehers">
+  <title>2.1. HTTP Request</title>
+  <link href='https://fonts.googleapis.com/css?family=Libre+Baskerville:400,700' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" href="/assets/css/normalize.css">
+  <link rel="stylesheet" href="/assets/css/skeleton.css">
+  <link rel="stylesheet" href="/assets/css/custom.css">
+  <link rel="stylesheet" href="/assets/css/zenburn.css" />
+</head>
+<body>
+
+<div class="container">
+  <header>
+    <div class="row">
+      <div id="logo" class="three columns">
+        <div id="menu">☰</div>
+      </div>
+    </div>
+  </header>
+  <div class="row">
+    <div class="six offset-by-three columns">
+      <article>
+        <h5>Chapter 2</h5>
+        <h1 class="title">2.1. HTTP Request</h1>
+        <p>Here is what a request message looks like:</p>
+
+<figure class="highlight"><pre><code class="language-text" data-lang="text">GET /v2/blog/good.tumblr.com/info HTTP/1.1
+Host: api.tumblr.com
+Cache-Control: no-cache</code></pre></figure>
+
+<p>The first line, called the <strong>request line</strong>, contains three parts - the <strong>request method</strong> (<code class="highlighter-rouge">GET</code>), the <strong>resource identifier</strong> (<code class="highlighter-rouge">/v2/blog/good.tumblr.com/info</code>) and <strong>protocol version</strong> (<code class="highlighter-rouge">HTTP/1.1</code>).</p>
+
+<h4 id="request-methods">Request Methods</h4>
+
+<p>Request methods indicate how the resource should be requested. The most common methods are <strong>GET</strong> and <strong>POST</strong>.</p>
+
+<p>In the Tumblr example in Chapter 1, we used <strong>GET</strong> to retrieve the blog’s information from <code class="highlighter-rouge">https://api.tumblr.com/v2/blog/good.tumblr.com/info</code>. The GET method requests a representation of the specified resource. Simply put, it retrieves data. The POST method on the other hand is used to send data to the resource for processing.</p>
+
+<p>It is important to note that even though GET is used to request data, GET requests can send data to the resource as well. However, the way the data is transmitted differs from POST in a couple of ways:</p>
+
+<ol>
+  <li>GET passes the data through the URL. POST passes the data through the message body. (I will explain better shortly).</li>
+  <li>Because URLs are limited in length, there is a limit to the size of data you can send through GET. You can send a lot of data, even files, with POST.</li>
+</ol>
+
+<p>You will see many REST APIs use only GET and POST. But these are not the only HTTP request methods that exist. Others include <strong>HEAD</strong>, <strong>PUT</strong>, <strong>DELETE</strong>, <strong>TRACE</strong>, <strong>OPTIONS</strong>, <strong>CONNECT</strong> and <strong>PATCH</strong>. We will however limit our scope to GET, POST, HEAD, PUT and DELETE.</p>
+
+<p>The <strong>HEAD</strong> method is similar to GET. The difference is it only returns the status information about the request without the response body. So while a GET request may return a response like, <em>“The file you requested is available. It is 35kB in size. Here is the content…”</em>, a HEAD request will return a response like, <em>“Yes I have the file you requested. It is 35kB in size. (Ask for the content if you need it)”</em>. The HEAD method is really handy when you are only concerned about metadata information like size or type and not the content itself.</p>
+
+<p><strong>PUT</strong> requests that the represented resource be updated with the sent data.</p>
+
+<p><strong>DELETE</strong>, as the name implies, requests representations of the resource be removed. As an example, I can delete a comment (of an authenticated user) on Instagram by sending the following DELETE request</p>
+
+<figure class="highlight"><pre><code class="language-text" data-lang="text">DELETE /v1/media/{media-id}/comments/{comment-id}?
+	access_token={access_token} HTTP/1.1
+Host: api.instagram.com</code></pre></figure>
+
+<h4 id="request-headers">Request Headers</h4>
+
+<figure class="highlight"><pre><code class="language-text" data-lang="text">GET /v2/blog/good.tumblr.com/info HTTP/1.1
+Host: api.tumblr.com
+Cache-Control: no-cache</code></pre></figure>
+
+<p>The second and third lines in our example are called <strong>headers</strong>. Headers are used to pass additional information about the request or the client to the server. They have the format:</p>
+
+<figure class="highlight"><pre><code class="language-text" data-lang="text">Name: Value</code></pre></figure>
+
+<p>For this request, the headers are <strong>HOST</strong> and <strong>Cache-Control</strong>.</p>
+
+<p>The Host header is used to specify the domain name of the server  we are sending the request to.</p>
+
+<p>Cache-Control<sup id="fnref:1"><a href="#fn:1" class="footnote">1</a></sup> is used to specify the caching rule for the request-response. One of REST’s principles is that responses should be labeled as cacheable or non-cacheable. The Cache-Control header helps the client determine if the result can be cached or not.</p>
+
+<p>There are many other headers that are standard for requests. Most of them are self explanatory. Some of these headers also apply to responses. You will see more as we proceed. Here are the common ones:</p>
+
+<ul>
+  <li><code class="highlighter-rouge">Content-Type</code>: The content format of the request body</li>
+  <li><code class="highlighter-rouge">Content-Length</code>: The length of the request body in 8-bit bytes</li>
+  <li><code class="highlighter-rouge">Date</code>: Message date and time</li>
+  <li><code class="highlighter-rouge">Accept</code>: Content-Types that are acceptable for the request</li>
+  <li><code class="highlighter-rouge">Connection</code>: Options for this connection</li>
+</ul>
+
+<p>A full list of HTTP headers is available here: <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html">http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html</a></p>
+
+<h4 id="message-body">Message Body</h4>
+
+<p>The message body is used to send request data to the server. But our example request does not include a message body. This is because it is a GET request and GET requests do not send data through the message body. To see what the request message body looks like, let’s consider a POST request to the Tumblr API. We simply follow the HTTP message format I mentioned earlier:</p>
+
+<p>An initial line
+Zero or more header lines
+A blank line, and
+An optional message body (the POST data)</p>
+
+<figure class="highlight"><pre><code class="language-text" data-lang="text">POST /v2/blog/good.tumblr.com/post HTTP/1.1
+Host: api.tumblr.com
+Content-Length: [post data length]
+Content-Type: [Post data type]
+
+[Post data]</code></pre></figure>
+
+<p>Our POST data can be anything and of any type. What is important is we let the server know what type of content we are sending. Hence the need for the Content-Type header. We also add a Content-Length header so the server knows the length of the data.</p>
+
+<p>The most common way data is sent through POST is as name-value pairs.</p>
+
+<figure class="highlight"><pre><code class="language-text" data-lang="text">title: Hello World
+body: This is a test post :)
+tags: test
+type: text</code></pre></figure>
+
+<p>No, not directly like that. The data is first formatted in a special way.</p>
+
+<ol>
+  <li>
+    <p>The name-value pairs are separated with ‘<strong>&amp;</strong>’  </p>
+
+    <p><code class="highlighter-rouge">
+ title: Hello World&amp;body: This is a test post :)&amp;tags: test&amp;type: text 
+</code></p>
+  </li>
+  <li>
+    <p>The names and values are then separated with ‘<strong>=</strong>’  </p>
+
+    <p><code class="highlighter-rouge">
+ title=Hello World&amp;body=This is a test post :)&amp;tags=test&amp;type=text 
+</code></p>
+  </li>
+  <li>
+    <p>Spaces are replaced with ‘<strong>+</strong>’  </p>
+
+    <p><code class="highlighter-rouge">
+ title=Hello+World&amp;body=This+is+a+test+post+:)&amp;tags=test&amp;type=text 
+</code></p>
+  </li>
+  <li>
+    <p>Other non-alphanumeric characters in the value are replaced with a percent sign and  two hexadecimal digits representing the ASCII code of the character (the colon “:” becomes %3A and “)” becomes %29)  </p>
+
+    <p><code class="highlighter-rouge">
+ title=Hello+World&amp;body=This+is+a+test+post+%3A%29&amp;tags=test&amp;type=text
+</code></p>
+  </li>
+</ol>
+
+<p>This is called URL encoding or Percent encoding<sup id="fnref:2"><a href="#fn:2" class="footnote">2</a></sup>. I know you are a bit confused about step 4 but not to worry, there are inbuilt functions to perform this encoding in modern programming languages.</p>
+
+<p>This content type is called <code class="highlighter-rouge">application/x-www-form-urlencoded</code>. It is the default content type for sending POST data.</p>
+
+<p>Now we can have our complete POST request:</p>
+
+<figure class="highlight"><pre><code class="language-text" data-lang="text">POST /v2/blog/good.tumblr.com/post HTTP/1.1
+Host: api.tumblr.com
+Content-Length: 69
+Content-Type: application/x-www-form-urlencoded
+
+title=Hello+World&amp;body=This+is+a+test+post+%3A%29&amp;tags=test&amp;type=text</code></pre></figure>
+
+<p>Sending data through a GET request is similar. But we do not need the message body, and consequently, the Content-Length and Content-Type headers.  The data is passed through the URL. The URL is joined to the URL encoded string with a ‘<strong>?</strong>’ character.</p>
+
+<figure class="highlight"><pre><code class="language-text" data-lang="text">GET /v2/blog/good.tumblr.com/posts/queue?filter=html&amp;limit=100 HTTP/1.1
+Host: api.tumblr.com</code></pre></figure>
+
+<p>The part of the URL containing the data, i.e. the one after the question mark (<code class="highlighter-rouge">filter=html&amp;limit=100</code> in the example above), is called the <strong>query string</strong>.</p>
+
+<div class="footnotes">
+  <ol>
+    <li id="fn:1">
+      <p>To understand cache-control headers better, see ‘A Beginner’s Guide to HTTP Cache Headers’: <a href="http://www.mobify.com/blog/beginners-guide-to-http-cache-headers/">http://www.mobify.com/blog/beginners-guide-to-http-cache-headers/</a> <a href="#fnref:1" class="reversefootnote">&#8617;</a></p>
+    </li>
+    <li id="fn:2">
+      <p>Percent-encoding: <a href="https://en.wikipedia.org/wiki/Percent-encoding">https://en.wikipedia.org/wiki/Percent-encoding</a> <a href="#fnref:2" class="reversefootnote">&#8617;</a></p>
+    </li>
+  </ol>
+</div>
+
+      </article>
+    </div>
+  </div>
+</div>
+<div class="colophon">
+  <div class="container">
+    <div class="row">
+      <div class="six offset-by-three columns">
+        <ul class="pagination">
+        
+        
+        <li class="six columns m-t-20 prev"><a href="/chapter-2/2.0-a-second-look-at-http.html">2.0. A second look at HTTP</a></li>
+        <li class="six columns m-t-20 next"><a href="/chapter-2/2.2-http-response.html">2.2. HTTP Response</a></li>
+        </ul>
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+          var disqus_shortname = 'kehers';
+          (function() {
+              var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+              dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+              (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+          })();
+        </script>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="container">
+    <div class="row">
+      <div class="six offset-by-three columns">
+        <nav>
+          <li><a href="/">home</a></li>
+          <li><a href="http://gum.co/Sxoj" class="bordered">Download the book. Free</a></li>
+        </nav>
+        <p>&copy; 2016. Opeyemi Obembe. All rights reserved.</p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script type="text/javascript" src="/assets/js/menu.js"></script>
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+ga('create', 'UA-53373832-1', 'auto');
+ga('send', 'pageview');
+</script>
+
+</body>
+</html>

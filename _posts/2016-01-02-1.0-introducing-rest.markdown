@@ -1,0 +1,53 @@
+---
+published: true
+title: 1.0. Introducing REST
+category: Chapter-1
+layout: post
+---
+An API (Application Programming Interface) is a collection of features that detail data interaction between applications. APIs are why you can copy text from your browser to an editor on your computer; why your Foursquare mobile application can request GPS coordinates from your phone; and why you can use an entirely different twitter client that is not made by Twitter.
+
+The examples are endless. They happen in every part of computing. On the web, you can use APIs to request data from or send data to any of the platforms that support them. Consequently, you can use APIs to extend services these platforms provide or build custom solutions on them, whether it is to download all pictures you've liked on Instagram, add the birthdays of your Facebook friends to your Google Calendar or listen to the Twitter stream for tweets containing the words '**discount**' or '**coupon**'.
+
+On the web, there are different ways this data exchange can be carried out. There are very detailed standards like SOAP (Simple Object Access Protocol). And there is REST.
+
+REST is an acronym for **Re**presentational **S**tate **T**ransfer. The phrase was coined by Roy Fielding, one of the principal authors of HTTP, in his Ph.D dissertation[^1]. Unlike SOAP, it is not a standard. It does not have detailed technical specifications. It is simply a design procedure, that shows how data communication can be achieved using same principles used by web browsers for content delivery. In simpler words, how do we use HTTP for data transfer like browsers do? So it is called an architectural style instead.
+
+The term *Representational State Transfer* means transferring the representation of the state of an object of interest. This object of interest is called the **resource**. Imagine I need information about the blog: ``good.tumblr.com``. I can send a request to Tumblr, the way a browser will, through the URL:
+
+{% highlight text %}
+https://api.tumblr.com/v2/blog/good.tumblr.com/info
+{% endhighlight %}
+
+(Go ahead, type that in your web browser. Remember, REST uses same principles used by web browsers).
+
+Tumblr will then return a representation of the blog's state like this (line breaks added for clarity):
+
+{% highlight json %}
+{
+  "meta": {
+    "status": 200,
+    "msg": "OK"
+  },
+  "response": {
+    "blog": {
+      "title": "",
+      "name": "good",
+      "posts": 2455,
+      "url": "http:\/\/good.tumblr.com\/",
+      "updated": 1439923053,
+      "description": "(removed for brevity)",
+      "is_nsfw": false,
+      "ask": true,
+      "ask_page_title": "Ask GOOD a question",
+      "ask_anon": false,
+      "uuid": "good.tumblr.com",
+      "share_likes": true,
+      "likes": 430
+    }
+  }
+}
+{% endhighlight %}
+
+It is that simple. Every necessary data request, update, user authentication and interaction is carried out over HTTP the same way it done on web browsers. In fact, as you can see, all you need to access some REST APIs is a web browser. This makes REST easy to understand, implement and document, and has made it de facto for all major web platforms - Google, Facebook, Twitter, Yahoo, just name it.
+
+[^1]: Architectural Styles and the Design of Network-based Software Architectures: [https://www.ics.uci.edu/~fielding/pubs/dissertation/top.htm](https://www.ics.uci.edu/~fielding/pubs/dissertation/top.htm)

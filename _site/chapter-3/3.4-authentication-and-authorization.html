@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="@kehers">
+  <meta name="twitter:title" content="3.4. Authentication & Authorization">
+  <meta name="twitter:description" content="Most platforms are more useful when a user is logged in. There is little you can do on Facebook, Twitter, Instagram or Dropbox when you are not logged in. On Twitter, you probably get to look throu...">
+  <meta name="twitter:creator" content="@kehers">
+  <title>3.4. Authentication & Authorization</title>
+  <link href='https://fonts.googleapis.com/css?family=Libre+Baskerville:400,700' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" href="/assets/css/normalize.css">
+  <link rel="stylesheet" href="/assets/css/skeleton.css">
+  <link rel="stylesheet" href="/assets/css/custom.css">
+  <link rel="stylesheet" href="/assets/css/zenburn.css" />
+</head>
+<body>
+
+<div class="container">
+  <header>
+    <div class="row">
+      <div id="logo" class="three columns">
+        <div id="menu">☰</div>
+      </div>
+    </div>
+  </header>
+  <div class="row">
+    <div class="six offset-by-three columns">
+      <article>
+        <h5>Chapter 3</h5>
+        <h1 class="title">3.4. Authentication & Authorization</h1>
+        <p>Most platforms are more useful when a user is logged in. There is little you can do on Facebook, Twitter, Instagram or Dropbox when you are not logged in. On Twitter, you probably get to look through a couple of public tweets but you won’t be able to tweet, heart or retweet.</p>
+
+<p>When interacting with the platform through an API, it is the same thing. Most times, there is the need to use an API in the context of a user. If I am creating an app that shows the total distance traveled and amount a user has spent on Uber for example, there must be a way to <em>log in</em> the user from the API. This is called user authentication.</p>
+
+<p>Even when you are not interested in making API calls on behalf of a user or a platform does not offer user related resources, you may still be required to authenticate the client. This is called client authentication. The way this works is you are required to first register your application on the platform. The platform then gives you a set of strings (mostly two) generally called <em>application</em> or <em>API keys</em>. Subsequently, you send these keys along your API requests so that the server can identify the client.</p>
+
+<p>Authentication and Authorization are closely used terms but they have slightly different meanings. Authentication verifies your access to a resource. <em>“Is that username and password even valid for this Twitter login?”</em></p>
+
+<p>Authorization comes after authentication. It verifies the limits of access to the resource. <em>“Can you only view tweets? Can you send DMs as well?”</em></p>
+
+<p>There are a couple of ways authentication and authorization is carried out with REST APIs. Here are the most common ones:</p>
+
+<h4 id="request-parameter-based-authentication">1. Request parameter based authentication</h4>
+
+<p>This is the simplest method of authentication. User credentials (username/email and password) or client application keys are sent through GET or POST to the API endpoint.</p>
+
+<p>An example is the Infobip<sup id="fnref:1"><a href="#fn:1" class="footnote">1</a></sup> API. To send an SMS, you just need to send a GET request to:</p>
+
+<figure class="highlight"><pre><code class="language-text" data-lang="text">http://api.infobip.com/api/v3/sendsms/plain
+?user=test&amp;password=test&amp;sender=Friend&amp;SMSText=messagetext&amp;GSM=38598514674</code></pre></figure>
+
+<p>Notice how the parameters <strong>user</strong> and <strong>password</strong> are passed through the URL query.</p>
+
+<p>Also see how an API key is passed to the Flickr API:</p>
+
+<figure class="highlight"><pre><code class="language-text" data-lang="text">https://api.flickr.com/services/rest/?method=flickr.commons.getInstitutions
+&amp;api_key=89961fa5906cf03e55d50e23669c2a42</code></pre></figure>
+
+<h4 id="http-authentication">2. HTTP authentication</h4>
+
+<p>HTTP has support for several authentication schemes. The way it works is:</p>
+
+<ul>
+  <li>The client makes an authenticated request to a secure resource</li>
+  <li>The server responds with <code class="highlighter-rouge">401 Unauthorized</code> status and <code class="highlighter-rouge">WWW-Authenticate</code> header. The WWW-Authenticate header indicates the authentication schemes and applicable parameters</li>
+  <li>Based on the authentication scheme, the client constructs and responds with the required credentials</li>
+  <li>The server verifies the credentials and allow access to the secure resource</li>
+</ul>
+
+<p>The two most common authentication schemes you will likely come across are Basic Access Authentication and Digest Access Authentication. I will explain how both schemes work but note that you do not have to manually implement any. There are inbuilt functions, libraries or frameworks to take care of this in your preferred web programming language.</p>
+
+<h5 id="basic-access-authentication">Basic Access Authentication</h5>
+
+<p>(Plivo<sup id="fnref:2"><a href="#fn:2" class="footnote">2</a></sup> supports Basic Authentication so we will be using it as an example. I will also be showing requests using cURL so as to introduce you to new flags.)</p>
+
+<p>Here is the flow of the Basic Access Authentication:</p>
+
+<ol>
+  <li>
+    <p>We (client) send a request.</p>
+
+    <p><code class="highlighter-rouge">
+ curl -i https://api.plivo.com/v1/Account/MYZJFMTM/
+</code></p>
+  </li>
+  <li>
+    <p>Server responds with a <code class="highlighter-rouge">401 Unauthorized</code> status and <code class="highlighter-rouge">WWW-Authenticate: Basic</code> header.</p>
+
+    <p>```
+ HTTP/1.1 401 UNAUTHORIZED
+ Content-Type: text/html; charset=utf-8
+ Date: Thu, 08 Oct 2015 00:58:24 GMT
+ Server: nginx/1.6.2
+ WWW-Authenticate: Basic realm=”Login Required”
+ Content-Length: 90
+ Connection: keep-alive</p>
+
+    <p>Could not verify your access level for that URL.
+ ```</p>
+  </li>
+  <li>
+    <p>Now that we know a Basic authentication is needed, we construct our credentials and send it back using an <code class="highlighter-rouge">Authorization</code> header. The way the credentials is constructed in Basic authentication is to base64 encode the value <strong>username:password</strong>. So if our username is <code class="highlighter-rouge">MYZJFMTM</code> and password is <code class="highlighter-rouge">ZDcwYTA0ZG</code>, the authorization string will be <code class="highlighter-rouge">base64encode(“MYZJFMTM:ZDcwYTA0ZG”)</code>. Our new request will be:</p>
+
+    <p><code class="highlighter-rouge">
+ curl -H 'Authorization: Basic TVlaSkZNVE06WkRjd1lUQT
+ 	BaRw=='
+ 	https://api.plivo.com/v1/Account/MYZJFMTM/
+</code></p>
+  </li>
+  <li>
+    <p>The server then responds with access to the resource.</p>
+
+    <p>HTTP/1.1 200 OK
+ Content-Type: application/json
+ Date: Thu, 08 Oct 2015 01:21:29 GMT
+ Server: nginx/1.6.2
+ Connection: keep-alive</p>
+
+    <p>{
+   “account_type”: “standard”,
+   “billing_mode”: “prepaid”,
+   “cash_credits”: “14.29624”,
+   “timezone”: “Africa/Lagos”
+ }</p>
+  </li>
+</ol>
+
+<p>One cURL tip here is that instead of having to calculate the base64 encode of username:password, I can use the u flag to directly specify the username and password and let cURL take it from there. In other words, this works perfectly fine for step 3:</p>
+
+<p>curl -u ‘MYZJFMTM:ZDcwYTA0ZG’
+  	https://api.plivo.com/v1/Account/MYZJFMTM/</p>
+
+<h5 id="digest-access-authentication">Digest Access Authentication</h5>
+
+<p>The Digest Authentication scheme is an improvement on Basic Authentication. Instead of sending a base64 encoded representation of the user credentials that can easily be decoded if intercepted, a hashed value is used instead.</p>
+
+<p>The flow is similar to Basic Authentication. We will use the CloudApp<sup id="fnref:3"><a href="#fn:3" class="footnote">3</a></sup> API as an example.</p>
+
+<ol>
+  <li>We send a GET request. The API requires an <code class="highlighter-rouge">application/json</code> accept header, so we include that as well.</li>
+</ol>
+
+<p>curl -i -H ‘accept: application/json’ http://my.cl.ly/account</p>
+
+<ol>
+  <li>CloudApp replies with a <code class="highlighter-rouge">401</code> status and <code class="highlighter-rouge">WWW-Authenticate: Digest</code> header.</li>
+</ol>
+
+<p>HTTP/1.1 401 Unauthorized
+Content-Type: text/plain; charset=utf-8
+Content-Length: 28
+Server: nginx/1.4.6 (Ubuntu)
+Status: 401 Unauthorized
+WWW-Authenticate: Digest realm=”Application”, 		qop=”auth”,
+	algorithm=MD5,
+	nonce=”MTQ0NDMyOTA1OTowOTcwOTBhMmU4MGM4OTEyZGY2O
+	GY5NzIyZjMyZTM0MA==”,
+	opaque=”9eb56ccb2e8b017ae42bdb4739690863”</p>
+
+<p>HTTP Digest: Access denied.</p>
+
+<p>It gets a little tricky here but stay with me. First thing you should do is note the returned values in the response. We will be needing them to calculate our response. </p>
+
+<p>realm=”Application”
+qop=”auth” (quality of protection)
+algorithm=MD5
+nonce8=”MTQ0NDMyOTA1OTowOTcwOTBhMmU4MGM4OTEyZGY2OGY5NzIyZjMyZTM0MA==”
+opaque=”9eb56ccb2e8b017ae42bdb4739690863” 
+Calculating our response involves three steps.</p>
+
+<ol>
+  <li>
+    <p>First, we calculate H1. This is the md5 of <code class="highlighter-rouge">username:realm:password  </code></p>
+
+    <p><code class="highlighter-rouge">
+ H1 = md5(kehers@gmail.com:Application:secret)  = fc825c89d55aad0a5dda2ba83903ea9e  
+</code></p>
+
+    <p>Note that this is only valid if the WWW-Authenticate header in the response does not include an algorithm directive (like with our example response) or if it has a value of “<code class="highlighter-rouge">md5</code>”. If the algorithm directive value is “<code class="highlighter-rouge">MD5-sess</code>”, <code class="highlighter-rouge">H1</code> becomes <code class="highlighter-rouge">md5(md5(username:realm:password):nonce:cnonce)</code>. Cnonce is a client provided nonce<sup id="fnref:4"><a href="#fn:4" class="footnote">4</a></sup> value. </p>
+  </li>
+  <li>
+    <p>Next, we calculate H2. This is the md5 of <code class="highlighter-rouge">HTTP-method:endpoint  </code></p>
+
+    <p><code class="highlighter-rouge">
+ H2 = md5(GET:/account)   = ff6ba2065ae532eebf0c813472bc795d  
+</code></p>
+
+    <p>This is only valid if <code class="highlighter-rouge">qop</code> is unspecified or is “<code class="highlighter-rouge">auth</code>”. If the value is “<code class="highlighter-rouge">auth-int</code>”, <code class="highlighter-rouge">H2</code> is <code class="highlighter-rouge">md5(method:endpoint:md5(entity-body)) </code></p>
+  </li>
+  <li>
+    <p>Finally, we calculate our response. Our response is <code class="highlighter-rouge">md5(HA1:nonce:nonce-count:cnonce:qop:HA2)</code>. We do not have a nonce-count and cnonce value so this becomes <code class="highlighter-rouge">md5(HA1:nonce:::qop:HA2)  </code></p>
+
+    <p><code class="highlighter-rouge">
+ response = md5(fc825c89d55aad0a5dda2ba83903ea9e:MTQ0NDMyOTA1OTowOTcwOTBhMmU4MGM4OTEyZGY2OGY5NzIyZjMyZTM0MA==:::auth:ff6ba2065ae532eebf0c813472bc795d) = d38fcc0f22b8f4e6577b62d911214950  
+</code></p>
+
+    <p>If <code class="highlighter-rouge">qop</code> is not specified, response is <code class="highlighter-rouge">md5(HA1:nonce:HA2)</code></p>
+  </li>
+</ol>
+
+<p>Now that we have our response value, we can go ahead and create our Authorization header. Here is what the value looks like:</p>
+
+<figure class="highlight"><pre><code class="language-text" data-lang="text">Digest username="kehers@gmail.com", realm="Application", nonce="MTQ0NDMyOTA1OTowOTcwOTBhMmU4MGM4OTEyZGY2OGY5NzIyZjMyZTM0MA==", uri="/account", qop=auth, nc=, cnonce="", response="d38fcc0f22b8f4e6577b62d911214950", opaque="9eb56ccb2e8b017ae42bdb4739690863"</code></pre></figure>
+
+<p>Here is the full request:</p>
+
+<figure class="highlight"><pre><code class="language-text" data-lang="text">curl -H 'accept: application/json' -H 'Authorization: Digest username="kehers@gmail.com", realm="Application", nonce="MTQ0NDMyOTA1OTowOTcwOTBhMmU4MGM4OTEyZGY2OGY5NzIyZjMyZTM0MA==", uri="/account", qop=auth, nc=, cnonce="", response="d38fcc0f22b8f4e6577b62d911214950", opaque="9eb56ccb2e8b017ae42bdb4739690863"' https://api.plivo.com/v1/Account/MYZJFMTM/</code></pre></figure>
+
+<h4 id="oauth">3. OAuth</h4>
+
+<p>OAuth is an open standard for authorization. What makes it interesting is that it does not only provide an authentication layer but authorization as well. What you would have noticed about the other methods are that:</p>
+
+<ol>
+  <li>They only take care of authentication and not authorization. <em>Even though we are allowing access to the API, can this access be scoped out in such a way that the client gets access to just the needed resources and not all resources?</em></li>
+  <li>The user shares his credentials with the client. <em>Is there any way this can be done without the user directly sharing his credentials with the client?</em></li>
+</ol>
+
+<p>These are challenges OAuth solves. The authorization concept is really straight forward:</p>
+
+<ol>
+  <li>The client redirects the user to a login page on the server</li>
+  <li>The user logs in through that login page (not by providing his credentials to the client)</li>
+  <li>He is asked if he wants to authorize the client</li>
+  <li>(If yes) The server redirects him back to a URL pre-specified by the client with some tokens passed through the URL
+The client uses these tokens for subsequent calls to parts of the API that require authorization</li>
+</ol>
+
+<p>Technically, it is more complex than that. We will be looking into OAuth in detail in the next chapter. It is that important because nearly all the top players providing data access via API - Facebook, Twitter, Google, Yahoo - use it. Even those with existing authentication schemes, Google and Flickr for example, are deprecating it in favor of OAuth.</p>
+
+<div class="footnotes">
+  <ol>
+    <li id="fn:1">
+      <p>infobip.com provides mobile messaging solutions. The SMS API documentation is available here: <a href="http://dev.infobip.com/v1/docs/getting-started">http://dev.infobip.com/v1/docs/getting-started</a> <a href="#fnref:1" class="reversefootnote">&#8617;</a></p>
+    </li>
+    <li id="fn:2">
+      <p>plivo.com provides voice and SMS solutions. The API documentation is available here: <a href="https://www.plivo.com/docs/api/">https://www.plivo.com/docs/api/</a> <a href="#fnref:2" class="reversefootnote">&#8617;</a></p>
+    </li>
+    <li id="fn:3">
+      <p>Cloudapp (getcloudapp.com) allows easy sharing of documents, images, audio and video files. The API documentation is available on Github here: <a href="https://github.com/cloudapp/api/blob/master/README.md">https://github.com/cloudapp/api/blob/master/README.md</a> <a href="#fnref:3" class="reversefootnote">&#8617;</a></p>
+    </li>
+    <li id="fn:4">
+      <p>Nonce is a random string used to ensure a request (or action) is done once. <a href="#fnref:4" class="reversefootnote">&#8617;</a></p>
+    </li>
+  </ol>
+</div>
+
+      </article>
+    </div>
+  </div>
+</div>
+<div class="colophon">
+  <div class="container">
+    <div class="row">
+      <div class="six offset-by-three columns">
+        <ul class="pagination">
+        
+        
+        <li class="six columns m-t-20 prev"><a href="/chapter-3/3.3-errors.html">3.3. Errors</a></li>
+        <li class="six columns m-t-20 next"><a href="/chapter-3/3.5-libraries.html">3.5. Libraries</a></li>
+        </ul>
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+          var disqus_shortname = 'kehers';
+          (function() {
+              var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+              dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+              (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+          })();
+        </script>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="container">
+    <div class="row">
+      <div class="six offset-by-three columns">
+        <nav>
+          <li><a href="/">home</a></li>
+          <li><a href="http://gum.co/Sxoj" class="bordered">Download the book. Free</a></li>
+        </nav>
+        <p>&copy; 2016. Opeyemi Obembe. All rights reserved.</p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script type="text/javascript" src="/assets/js/menu.js"></script>
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+ga('create', 'UA-53373832-1', 'auto');
+ga('send', 'pageview');
+</script>
+
+</body>
+</html>

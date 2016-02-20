@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="@kehers">
+  <meta name="twitter:title" content="2.0. A second look at HTTP">
+  <meta name="twitter:description" content="We have seen that REST uses HTTP for data communication as browsers do. Virtually everything we will be doing with REST will be through HTTP. It is therefore important we take a closer look at HTTP...">
+  <meta name="twitter:creator" content="@kehers">
+  <title>2.0. A second look at HTTP</title>
+  <link href='https://fonts.googleapis.com/css?family=Libre+Baskerville:400,700' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" href="/assets/css/normalize.css">
+  <link rel="stylesheet" href="/assets/css/skeleton.css">
+  <link rel="stylesheet" href="/assets/css/custom.css">
+  <link rel="stylesheet" href="/assets/css/zenburn.css" />
+</head>
+<body>
+
+<div class="container">
+  <header>
+    <div class="row">
+      <div id="logo" class="three columns">
+        <div id="menu">☰</div>
+      </div>
+    </div>
+  </header>
+  <div class="row">
+    <div class="six offset-by-three columns">
+      <article>
+        <h5>Chapter 2</h5>
+        <h1 class="title">2.0. A second look at HTTP</h1>
+        <p>We have seen that REST uses HTTP for data communication as browsers do. Virtually everything we will be doing with REST will be through HTTP. It is therefore important we take a closer look at HTTP itself.</p>
+
+<p>HTTP is one of the protocols for data communication on the internet. It enables data transmission in a request-response pattern. The client sends a request for a resource to the server. The server in turn replies with a response. When you type a web address in a browser (client), that is basically what happens - the browser sends a request for the webpage and the server sends a response with the page’s content.</p>
+
+<p>An HTTP message (request or response) has the format:</p>
+
+<ul>
+  <li>An initial line</li>
+  <li>Zero or more header lines</li>
+  <li>A blank line, and</li>
+  <li>An optional message body</li>
+</ul>
+
+<p>Let’s look at both message types.</p>
+
+      </article>
+    </div>
+  </div>
+</div>
+<div class="colophon">
+  <div class="container">
+    <div class="row">
+      <div class="six offset-by-three columns">
+        <ul class="pagination">
+        
+        
+        <li class="six columns m-t-20 prev"><a href="/chapter-1/1.0-introducing-rest.html">1.0. Introducing REST</a></li>
+        <li class="six columns m-t-20 next"><a href="/chapter-2/2.1-http-request.html">2.1. HTTP Request</a></li>
+        </ul>
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+          var disqus_shortname = 'kehers';
+          (function() {
+              var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+              dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+              (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+          })();
+        </script>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="container">
+    <div class="row">
+      <div class="six offset-by-three columns">
+        <nav>
+          <li><a href="/">home</a></li>
+          <li><a href="http://gum.co/Sxoj" class="bordered">Download the book. Free</a></li>
+        </nav>
+        <p>&copy; 2016. Opeyemi Obembe. All rights reserved.</p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script type="text/javascript" src="/assets/js/menu.js"></script>
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+ga('create', 'UA-53373832-1', 'auto');
+ga('send', 'pageview');
+</script>
+
+</body>
+</html>

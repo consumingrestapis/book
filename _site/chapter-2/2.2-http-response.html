@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="@kehers">
+  <meta name="twitter:title" content="2.2. HTTP Response">
+  <meta name="twitter:description" content="We have seen what an HTTP Request looks like. Here is what the response looks like:
+
+HTTP/1.1 200 OK
+Server: nginx
+Date: Fri, 02 Oct 2015 11:54:02 GMT
+Content-Type: application/json; charset=utf-8
+...">
+  <meta name="twitter:creator" content="@kehers">
+  <title>2.2. HTTP Response</title>
+  <link href='https://fonts.googleapis.com/css?family=Libre+Baskerville:400,700' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" href="/assets/css/normalize.css">
+  <link rel="stylesheet" href="/assets/css/skeleton.css">
+  <link rel="stylesheet" href="/assets/css/custom.css">
+  <link rel="stylesheet" href="/assets/css/zenburn.css" />
+</head>
+<body>
+
+<div class="container">
+  <header>
+    <div class="row">
+      <div id="logo" class="three columns">
+        <div id="menu">☰</div>
+      </div>
+    </div>
+  </header>
+  <div class="row">
+    <div class="six offset-by-three columns">
+      <article>
+        <h5>Chapter 2</h5>
+        <h1 class="title">2.2. HTTP Response</h1>
+        <p>We have seen what an HTTP Request looks like. Here is what the response looks like:</p>
+
+<figure class="highlight"><pre><code class="language-text" data-lang="text">HTTP/1.1 200 OK
+Server: nginx
+Date: Fri, 02 Oct 2015 11:54:02 GMT
+Content-Type: application/json; charset=utf-8
+Connection: close
+Vary: Accept-Encoding
+P3P: CP="Tumblr's privacy policy is available here:
+	https://www.tumblr.com/policy/en/privacy"
+
+{"meta":{"status":200,"msg":"OK"},"response":{"blog":{"title":"","name":"good","posts":2455,"url":"http:\/\/good.tumblr.com\/","updated":1439923053,"description":"*removed for brevity*","is_nsfw":false,"ask":true,"ask_page_title":"Ask GOOD a question","ask_anon":false,"uuid":
+"good.tumblr.com","share_likes":true,"likes":430}}}</code></pre></figure>
+
+<p>The first line, is called the status line. It contains 3 parts just like the request line. It contains the <strong>protocol version</strong> (<code class="highlighter-rouge">HTTP/1.1</code>), the response <strong>status code</strong> (<code class="highlighter-rouge">200</code>) and the <strong>reason phrase</strong> (<code class="highlighter-rouge">OK</code>).</p>
+
+<h4 id="status-codes">Status Codes</h4>
+
+<p>The status code is a 3-digit integer that tells us the status of the request. The reason phrase gives a short description of the status code.</p>
+
+<p>Status codes can be categorized into 5 based on the first digit.</p>
+
+<p><strong>1xx</strong> - There is additional information about this request.
+<strong>2xx</strong> - The request is successful.
+<strong>3xx</strong> - A redirection will take place to fulfill this request.
+<strong>4xx</strong> - There has been an error from the client.
+<strong>5xx</strong> - There has been an error from the Server.</p>
+
+<p>Common status codes<sup id="fnref:3"><a href="#fn:3" class="footnote">1</a></sup> and reason phrases you will encounter are:</p>
+
+<ul>
+  <li><strong>200 OK</strong> - The request is OK.</li>
+  <li><strong>301 Moved Permanently</strong> - The resource you are looking for has been permanently moved.</li>
+  <li><strong>302 Moved Temporarily</strong> - The resource has been temporarily moved.</li>
+  <li><strong>400 Bad Request</strong> - There is an error with your request.</li>
+  <li><strong>401 Unauthorized</strong> - You are not authorized to make this request.</li>
+  <li><strong>403 Forbidden</strong> - You are forbidden to make this request.</li>
+  <li><strong>404 Not Found</strong> - The resource you are looking for cannot be found.</li>
+  <li><strong>500 Internal Server Error</strong> - There has been a server error while responding to your request.</li>
+</ul>
+
+<h4 id="response-headers">Response Headers</h4>
+
+<p>Like request headers, response headers allow the server send additional information about the response or server. Here are the headers in our example response:</p>
+
+<figure class="highlight"><pre><code class="language-text" data-lang="text">Server: nginx
+Date: Fri, 02 Oct 2015 11:54:02 GMT
+Content-Type: application/json; charset=utf-8
+Connection: close
+Vary: Accept-Encoding
+P3P: CP="Tumblr's privacy policy is available here:
+	https://www.tumblr.com/policy/en/privacy"</code></pre></figure>
+
+<p>These headers, well most, are self-explanatory:</p>
+
+<ul>
+  <li><strong>Server</strong> tells us the name of the server.</li>
+  <li><strong>Date</strong> is the response’s date and time.</li>
+  <li><strong>Content-Type</strong> tells us the response type - <code class="highlighter-rouge">application/json</code>.</li>
+  <li><strong>Connection</strong> specifies the connection control options. A value of close means the connection will be closed after completion of the response.</li>
+  <li><strong>Vary</strong> indicates various versions of the representation exist and tells us what headers can be used to resolve which version to serve. Accept-Encoding signifies a different version (compressed or uncompressed) can be served based on the request <code class="highlighter-rouge">Accept-Encoding</code> header. What this means is that if for example we want a compressed version of the response, we can send a request with the header <code class="highlighter-rouge">Accept-Encoding: gzip</code></li>
+  <li><strong>P3P</strong> is used to state how information collected about web browser users will be used.</li>
+</ul>
+
+<h4 id="response-body">Response Body</h4>
+
+<p>The last line is the body itself. Most times, this is our point of interest. Depending on the API, the response body can be returned in different formats that can easily be interpreted.</p>
+
+<figure class="highlight"><pre><code class="language-text" data-lang="text">{"meta":{"status":200,"msg":"OK"},"response":{"blog":{"title":"","name":"good","posts":2455,"url":"http:\/\/good.tumblr.com\/","updated":1439923053,"description":"*removed for brevity*","is_nsfw":false,"ask":true,"ask_page_title":"Ask GOOD a question","ask_anon":false,"uuid":
+"good.tumblr.com","share_likes":true,"likes":430}}}</code></pre></figure>
+
+<p>In this example, the body is returned as JSON (JavaScript Object Notation). You will be seeing a lot of JSON in responses and even requests.</p>
+
+<p>JSON is a light-weight format for data exchange. It is built on two data structures:</p>
+
+<ul>
+  <li><strong>Objects</strong> - a collection of name-value pairs.</li>
+  <li><strong>Arrays</strong> - an ordered list of values.</li>
+</ul>
+
+<p>These data structures exist across modern programming languages. It therefore makes JSON easy to parse in any modern programming language.</p>
+
+<p>JSON objects have the format:</p>
+
+<figure class="highlight"><pre><code class="language-text" data-lang="text">{"name": value, "another_name": value}</code></pre></figure>
+
+<p>JSON arrays have the format:</p>
+
+<figure class="highlight"><pre><code class="language-text" data-lang="text">[value, value]</code></pre></figure>
+
+<p><strong>value</strong> can be a string, object, array, number, boolean (<em>true or false</em>) or <em>null</em>. An object can therefore contain a string, number, an array or another object. An array can as well contain strings, numbers, boolean, null or another array or object.</p>
+
+<p>Here is the JSON response from our request, formatted for clarity. It should make perfect sense now:</p>
+
+<figure class="highlight"><pre><code class="language-text" data-lang="text">{
+  "meta": {
+    "status": 200,
+    "msg": "OK"
+  },
+  "response": {
+    "blog": {
+      "name": "good",
+      "posts": 2455,
+      "ask": true,
+      "uuid": "good.tumblr.com",
+      "likes": 430
+    }
+  }
+}</code></pre></figure>
+
+<p>The wrapper object contains two objects: <strong>meta</strong> and <strong>response</strong>. <strong>meta</strong> has the name-value pairs <strong>status</strong> and <strong>msg</strong>. <strong>response</strong> has a <strong>blog</strong> object. The <strong>blog</strong> object has the name-value pairs <strong>name</strong>, <strong>posts</strong>, <strong>ask</strong>, <strong>uuid</strong> and <strong>likes</strong>.</p>
+
+<p>As we move on, we will look at other response formats.</p>
+
+<div class="footnotes">
+  <ol>
+    <li id="fn:3">
+      <p>A complete list of HTTP status codes is available here: <a href="https://en.wikipedia.org/ wiki/List_of_HTTP_status_codes">https://en.wikipedia.org/wiki/List_of_HTTP_status_codes</a> <a href="#fnref:3" class="reversefootnote">&#8617;</a></p>
+    </li>
+  </ol>
+</div>
+
+      </article>
+    </div>
+  </div>
+</div>
+<div class="colophon">
+  <div class="container">
+    <div class="row">
+      <div class="six offset-by-three columns">
+        <ul class="pagination">
+        
+        
+        <li class="six columns m-t-20 prev"><a href="/chapter-2/2.1-http-request.html">2.1. HTTP Request</a></li>
+        <li class="six columns m-t-20 next"><a href="/chapter-3/3.0-anatomy-of-an-api-call.html">3.0. Anatomy of an API call</a></li>
+        </ul>
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+          var disqus_shortname = 'kehers';
+          (function() {
+              var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+              dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+              (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+          })();
+        </script>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="container">
+    <div class="row">
+      <div class="six offset-by-three columns">
+        <nav>
+          <li><a href="/">home</a></li>
+          <li><a href="http://gum.co/Sxoj" class="bordered">Download the book. Free</a></li>
+        </nav>
+        <p>&copy; 2016. Opeyemi Obembe. All rights reserved.</p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script type="text/javascript" src="/assets/js/menu.js"></script>
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+ga('create', 'UA-53373832-1', 'auto');
+ga('send', 'pageview');
+</script>
+
+</body>
+</html>
