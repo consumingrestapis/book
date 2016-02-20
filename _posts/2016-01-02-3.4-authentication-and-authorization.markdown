@@ -36,7 +36,7 @@ https://api.flickr.com/services/rest/?method=flickr.commons.getInstitutions
 &api_key=89961fa5906cf03e55d50e23669c2a42
 {% endhighlight %}
 
-####2. HTTP authentication
+#### 2. HTTP authentication
 
 HTTP has support for several authentication schemes. The way it works is:
 
@@ -47,7 +47,7 @@ HTTP has support for several authentication schemes. The way it works is:
 
 The two most common authentication schemes you will likely come across are Basic Access Authentication and Digest Access Authentication. I will explain how both schemes work but note that you do not have to manually implement any. There are inbuilt functions, libraries or frameworks to take care of this in your preferred web programming language.
 
-#####Basic Access Authentication
+##### Basic Access Authentication
 
 (Plivo[^2] supports Basic Authentication so we will be using it as an example. I will also be showing requests using cURL so as to introduce you to new flags.)
 
@@ -102,7 +102,7 @@ Here is the flow of the Basic Access Authentication:
   	https://api.plivo.com/v1/Account/MYZJFMTM/
 
 
-#####Digest Access Authentication
+##### Digest Access Authentication
 
 The Digest Authentication scheme is an improvement on Basic Authentication. Instead of sending a base64 encoded representation of the user credentials that can easily be decoded if intercepted, a hashed value is used instead.
 
@@ -172,7 +172,7 @@ Here is the full request:
 curl -H 'accept: application/json' -H 'Authorization: Digest username="kehers@gmail.com", realm="Application", nonce="MTQ0NDMyOTA1OTowOTcwOTBhMmU4MGM4OTEyZGY2OGY5NzIyZjMyZTM0MA==", uri="/account", qop=auth, nc=, cnonce="", response="d38fcc0f22b8f4e6577b62d911214950", opaque="9eb56ccb2e8b017ae42bdb4739690863"' https://api.plivo.com/v1/Account/MYZJFMTM/
 {% endhighlight %}
 
-####3. OAuth
+#### 3. OAuth
 
 OAuth is an open standard for authorization. What makes it interesting is that it does not only provide an authentication layer but authorization as well. What you would have noticed about the other methods are that:
 
