@@ -6,7 +6,7 @@ layout: post
 ---
 Most APIs place a limit on the number of request you can make at a particular time. This is called **rate limiting**. It is done to prevent spam and weighing down the server with too many requests.
 
-Different APIs have different rate limits.  The limit and how to monitor the number will be well documented. On Instagram, the global rate limit is 5000/hour per application or authentication token. Header fields to track the rate limit are also provided in the response.
+Different APIs have different rate limits. The limit and how to monitor the number will be well documented. On Instagram, the global rate limit is 5000/hour per application or authentication token. Header fields to track the rate limit are also provided in the response.
 
 {% highlight text %}
 GET /v1/tags/nofilter?access_token=51624076.1fb234

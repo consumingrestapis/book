@@ -51,7 +51,6 @@ stream.on('tweet', function (tweet) {
 });
 {% endhighlight %}
 
-
 The takeaway here is that you don’t need to take the long route of building everything from scratch. Check the API developer website for libraries, official (built by the provider) or unofficial (built by other developers), and see how you can leverage any to speed up your development process. Unless it is a new API, and I mean really new, there must be something you can build on. If you can’t find any, then that’s probably your cue to build one for other developers :)
 
 [^1]: twit - Twitter API client for node (REST & Streaming): [https://github.com/ttezel/twit](https://github.com/ttezel/twit)
