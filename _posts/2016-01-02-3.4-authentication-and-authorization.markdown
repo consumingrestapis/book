@@ -16,7 +16,7 @@ Authorization comes after authentication. It verifies the limits of access to th
 
 There are a couple of ways authentication and authorization is carried out with REST APIs. Here are the most common ones:
 
-####1. Request parameter based authentication
+#### 1. Request parameter based authentication
 
 This is the simplest method of authentication. User credentials (username/email and password) or client application keys are sent through GET or POST to the API endpoint.
 

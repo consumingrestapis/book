@@ -22,17 +22,17 @@ P3P: CP="Tumblr's privacy policy is available here:
 
 The first line, is called the status line. It contains 3 parts just like the request line. It contains the **protocol version** (`HTTP/1.1`), the response **status code** (`200`) and the **reason phrase** (`OK`).
 
-####Status Codes
+#### Status Codes
 
 The status code is a 3-digit integer that tells us the status of the request. The reason phrase gives a short description of the status code.
 
 Status codes can be categorized into 5 based on the first digit.
 
-**1xx** - There is additional information about this request.
-**2xx** - The request is successful.
-**3xx** - A redirection will take place to fulfill this request.
-**4xx** - There has been an error from the client.
-**5xx** - There has been an error from the Server.
+**1xx** - There is additional information about this request.    
+**2xx** - The request is successful.    
+**3xx** - A redirection will take place to fulfill this request.    
+**4xx** - There has been an error from the client.    
+**5xx** - There has been an error from the Server.    
 
 Common status codes[^3] and reason phrases you will encounter are:
 
@@ -46,7 +46,7 @@ Common status codes[^3] and reason phrases you will encounter are:
 - **500 Internal Server Error** - There has been a server error while responding to your request.
 
 
-####Response Headers
+#### Response Headers
 
 Like request headers, response headers allow the server send additional information about the response or server. Here are the headers in our example response:
 
@@ -70,7 +70,7 @@ These headers, well most, are self-explanatory:
 - **P3P** is used to state how information collected about web browser users will be used.
 
 
-####Response Body
+#### Response Body
 
 The last line is the body itself. Most times, this is our point of interest. Depending on the API, the response body can be returned in different formats that can easily be interpreted.
 

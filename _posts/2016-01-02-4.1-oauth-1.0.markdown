@@ -15,7 +15,7 @@ If the provider offers other implementations or changes to the standard OAuth 1.
 
 Now, let's break down the steps.
 
-####1. Request Temporary Credentials (Request Token)
+#### 1. Request Temporary Credentials (Request Token)
 
 The first step is that the consumer requests a temporary credential (request token) from the provider. Here are the parameters to be sent for the request:
 
@@ -176,7 +176,7 @@ nWBEVQL5OiBGCapY%3D&oauth_signature_method=HMAC-SHA1&oauth_timestamp=1444806443&
 
 Remember though, the parameter names and values must be percent-encoded. Also note that Tumblr supports only the Authorization header method of making an OAuth request. I only added the GET and POST requests to show how the requests can be made using these methods.
 
-####2. Authorization
+#### 2. Authorization
 
 Step 1 above will return `oauth_token`, `oauth_token_secret` and `oauth_callback_confirmed` in this response form:
 
@@ -196,7 +196,7 @@ The authorize endpoint tells the user the consumer wants his authorization. If h
 http://tumblr2jekyll.app/callback?oauth_token= to2bQj80kBybR1VJMbkZ&oauth_verifier=vK9mab4qgKnnr
 {% endhighlight %}
 
-####3. Request Token Credentials (Access Token)
+#### 3. Request Token Credentials (Access Token)
 
 Now that the user has been redirected back to the consumer's `oauth_callback`, the consumer exchanges the `oauth_token` for an **access token**. The process is very similar to the first step where we requested the **request token**. Continuing with our example consumer, the difference is that we will now add the parameters - `oauth_token` and `oauth_verifier` (returned by the provider in step 2) and will remove the `oauth_callback` parameter. Our focus is on the HMAC-SHA1 method so we will only calculate the signature based on that.
 
@@ -272,7 +272,7 @@ Easy, right?
 
 -
 
-####Making authenticated requests
+#### Making authenticated requests
 
 Now that the consumer has the access token, all requests to API endpoints that require authorization must be signed with it. Signing the requests follows the same process as we’ve seen in the last two steps.
 

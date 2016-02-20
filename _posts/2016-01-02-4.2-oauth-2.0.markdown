@@ -28,7 +28,7 @@ The available grant types are:
 
 Providers may support one or more of the grant types. Authorization Code and Implicit grant types are the most supported ones.
 
-#####1. Authorization Code
+##### 1. Authorization Code
 
 This is used by browser-based consumers that can handle browser redirects and can keep their client id and secret confidential.
 
@@ -76,7 +76,7 @@ The provider in turn replies with the access token in a response body similar to
 {"access_token":"2YotnFZFEjr1zCsicMWpAA"}
 {% endhighlight %}
 
-#####2. Implicit
+##### 2. Implicit
 
 In the authorization code grant type above, the client secret is posted with other parameters to obtain the access token. But remember, the client secret must be kept confidential so this is only feasible in server side consumers that can make POST request in a way the user can’t see, unlike pure client-side (e.g. javascript) consumers. The implicit grant type allows pure client-side consumers request access token without sending their client secret. The way it works is that the user is  redirected to the authorization URL as is in the authorization grant type; just that this time, the `response_type` parameter will have the value **token**
 
@@ -90,7 +90,7 @@ The provider returns the access token directly and not an authorization code thi
 https://redirect-uri#access_token={ACCESS_TOKEN}
 {% endhighlight %}
 
-#####3. Password Credentials
+##### 3. Password Credentials
 
 This grant type allows the consumer exchange the user's username and password for an access token directly. It is recommended to be used for consumers that are highly trusted by the provider only. Or apps created by the provider itself.
 
@@ -102,7 +102,7 @@ Content-Type: application/x-www-form-urlencoded
 grant_type=password&username={USERNAME}&password={PASSWORD}&client_id={CLIENT_ID}
 {% endhighlight %}
 
-#####4. Client Credentials
+##### 4. Client Credentials
 
 Here, the consumer can directly exchange the client id and secret for an access token.
 
@@ -116,7 +116,7 @@ grant_type=client_credentials&client_id={CLIENT_ID}&client_secret={CLIENT_SECRET
 
 -
 
-####Making authenticated requests
+#### Making authenticated requests
 
 Once the consumer has the access token, it can now be used to request resources that require authorization. This can be done by passing the access token through the Authorization header, POST body parameter or URI query parameter of a GET request. These are the same methods used in OAuth 1.0.
 

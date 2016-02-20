@@ -14,7 +14,7 @@ Cache-Control: no-cache
 
 The first line, called the **request line**, contains three parts - the **request method** (`GET`), the **resource identifier** (`/v2/blog/good.tumblr.com/info`) and **protocol version** (`HTTP/1.1`).
 
-####Request Methods
+#### Request Methods
 
 Request methods indicate how the resource should be requested. The most common methods are **GET** and **POST**.
 
@@ -39,7 +39,7 @@ DELETE /v1/media/{media-id}/comments/{comment-id}?
 Host: api.instagram.com
 {% endhighlight %}
 
-####Request Headers
+#### Request Headers
 
 {% highlight text %}
 GET /v2/blog/good.tumblr.com/info HTTP/1.1
@@ -70,7 +70,7 @@ There are many other headers that are standard for requests. Most of them are se
 A full list of HTTP headers is available here: [http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html](http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html)
 
 
-####Message Body
+#### Message Body
 
 The message body is used to send request data to the server. But our example request does not include a message body. This is because it is a GET request and GET requests do not send data through the message body. To see what the request message body looks like, let’s consider a POST request to the Tumblr API. We simply follow the HTTP message format I mentioned earlier:
 

@@ -56,7 +56,7 @@ To set the PATH:
 
 Don’t forget to add the semi-colon.
 
-#####1. Making a GET request with cURL
+##### 1. Making a GET request with cURL
 
 To make a GET request, open your console and type `curl {url}`
 
@@ -133,7 +133,7 @@ ETag: W/"2e5-e6a2f46b"
 {% endhighlight %}
 
 
-#####2. Making a POST request with cURL
+##### 2. Making a POST request with cURL
 
 Let's do a bulk post code lookup. First, we have to tell cURL we will be doing a POST request by using the **X** flag. To add the POST data, we use the **d** flag. To make a bulk post code lookup, postcodes.io requires a JSON object containing an array of the post codes. If we therefore have the post codes `PR3 0SG` and `OX49 5NU`, we have to construct a JSON object like this as our POST data:
 
@@ -215,7 +215,7 @@ Note that the flags are case-sensitive.
 
 -
 
-####Online Tools
+#### Online Tools
 
 There are online tools we can also use for API calls. One I really recommend is Postman. Postman is a Google Chrome extension for making API requests. Visit the website ([getpostman.com](http://getpostman.com/)) and follow the Get it link to install it from the Chrome store.
 
