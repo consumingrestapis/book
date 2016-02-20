@@ -10,7 +10,7 @@ Different APIs have different rate limits. The limit and how to monitor the numb
 
 {% highlight text %}
 GET /v1/tags/nofilter?access_token=51624076.1fb234
-  f.4ba35082be69465f9b1c0b4cc720287d HTTP/1.1
+      f.4ba35082be69465f9b1c0b4cc720287d HTTP/1.1
 Host: api.instagram.com
 
 HTTP/1.1 200 OK
