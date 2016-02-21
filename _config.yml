@@ -4,3 +4,5 @@ excerpt_separator: ""
 paginate: 30
 markdown: kramdown
 permalink: none
+kramdown:
+  input: GFM

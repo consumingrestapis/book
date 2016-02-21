@@ -37,6 +37,7 @@ To install on Mac or Linux,
     ```
 
 5. Run the make file and install     
+
     ```
     make && make install
     ```
@@ -49,12 +50,10 @@ To set the PATH:
 2. Double click on it. You should get the **Edit System Variable** popup.
 3. Place your cursor at the end of the **Variable value** content (if not there already). We will be adding to the existing content.
 4. Enter a semi-colon followed by the full path to the directory containing your curl.exe. If for example, I moved it to my Documents folder and the curl.exe directory is `curl_7_46_0_openssl_nghttp2_x64`, I simply add this to the content:
+  
+        ;C\Users\kehers\Documents\curl_7_46_0_openssl_ng http2_x64  
 
-{% highlight text %}
-  ;C\Users\kehers\Documents\curl_7_46_0_openssl_ng http2_x64  
-{% endhighlight %}
-
-Don’t forget to add the semi-colon.
+    Don’t forget to add the semi-colon.
 
 ##### 1. Making a GET request with cURL
 

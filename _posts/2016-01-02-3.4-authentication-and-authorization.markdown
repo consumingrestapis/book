@@ -55,51 +55,45 @@ Here is the flow of the Basic Access Authentication:
 
 1. We (client) send a request.
 
-    ```
-    curl -i https://api.plivo.com/v1/Account/MYZJFMTM/
-    ```
+        curl -i https://api.plivo.com/v1/Account/MYZJFMTM/
 
 2. Server responds with a `401 Unauthorized` status and `WWW-Authenticate: Basic` header.    
 
-     ~~~~
-     HTTP/1.1 401 UNAUTHORIZED
-     Content-Type: text/html; charset=utf-8
-     Date: Thu, 08 Oct 2015 00:58:24 GMT
-     Server: nginx/1.6.2
-     WWW-Authenticate: Basic realm="Login Required"
-     Content-Length: 90
-     Connection: keep-alive
- 
-     Could not verify your access level for that URL.
-     ~~~~
+        HTTP/1.1 401 UNAUTHORIZED
+        Content-Type: text/html; charset=utf-8
+        Date: Thu, 08 Oct 2015 00:58:24 GMT
+        Server: nginx/1.6.2
+        WWW-Authenticate: Basic realm="Login Required"
+        Content-Length: 90
+        Connection: keep-alive
+
+        Could not verify your access level for that URL.
 
 3. Now that we know a Basic authentication is needed, we construct our credentials and send it back using an `Authorization` header. The way the credentials is constructed in Basic authentication is to base64 encode the value **username:password**. So if our username is `MYZJFMTM` and password is `ZDcwYTA0ZG`, the authorization string will be `base64encode(“MYZJFMTM:ZDcwYTA0ZG”)`. Our new request will be:
 
-    ```
-    curl -H 'Authorization: Basic TVlaSkZNVE06WkRjd1lUQT
-    	BaRw=='
-    	https://api.plivo.com/v1/Account/MYZJFMTM/
-    ```
+        curl -H 'Authorization: Basic TVlaSkZNVE06WkRjd1lUQT
+        	BaRw=='
+        	https://api.plivo.com/v1/Account/MYZJFMTM/
 
 4. The server then responds with access to the resource.
 
-    HTTP/1.1 200 OK
-    Content-Type: application/json
-    Date: Thu, 08 Oct 2015 01:21:29 GMT
-    Server: nginx/1.6.2
-    Connection: keep-alive
+        HTTP/1.1 200 OK
+        Content-Type: application/json
+        Date: Thu, 08 Oct 2015 01:21:29 GMT
+        Server: nginx/1.6.2
+        Connection: keep-alive
 
-    {
-      "account_type": "standard",
-      "billing_mode": "prepaid",
-      "cash_credits": "14.29624",
-      "timezone": "Africa/Lagos"
-    }
+        {
+          "account_type": "standard",
+          "billing_mode": "prepaid",
+          "cash_credits": "14.29624",
+          "timezone": "Africa/Lagos"
+        }
 
-  One cURL tip here is that instead of having to calculate the base64 encode of username:password, I can use the u flag to directly specify the username and password and let cURL take it from there. In other words, this works perfectly fine for step 3:
+    One cURL tip here is that instead of having to calculate the base64 encode of username:password, I can use the u flag to directly specify the username and password and let cURL take it from there. In other words, this works perfectly fine for step 3:
 
-  curl -u 'MYZJFMTM:ZDcwYTA0ZG'
-  	https://api.plivo.com/v1/Account/MYZJFMTM/
+        curl -u 'MYZJFMTM:ZDcwYTA0ZG'
+        	https://api.plivo.com/v1/Account/MYZJFMTM/
 
 
 ##### Digest Access Authentication
@@ -110,53 +104,47 @@ The flow is similar to Basic Authentication. We will use the CloudApp[^3] API as
 
 1. We send a GET request. The API requires an `application/json` accept header, so we include that as well.
 
-curl -i -H 'accept: application/json' http://my.cl.ly/account
+        curl -i -H 'accept: application/json' http://my.cl.ly/account
 
 2. CloudApp replies with a `401` status and `WWW-Authenticate: Digest` header.
 
-HTTP/1.1 401 Unauthorized
-Content-Type: text/plain; charset=utf-8
-Content-Length: 28
-Server: nginx/1.4.6 (Ubuntu)
-Status: 401 Unauthorized
-WWW-Authenticate: Digest realm="Application", 		qop="auth",
-	algorithm=MD5,
-	nonce="MTQ0NDMyOTA1OTowOTcwOTBhMmU4MGM4OTEyZGY2O
-	GY5NzIyZjMyZTM0MA==",
-	opaque="9eb56ccb2e8b017ae42bdb4739690863"
+        HTTP/1.1 401 Unauthorized
+        Content-Type: text/plain; charset=utf-8
+        Content-Length: 28
+        Server: nginx/1.4.6 (Ubuntu)
+        Status: 401 Unauthorized
+        WWW-Authenticate: Digest realm="Application", 		qop="auth",
+        	algorithm=MD5,
+        	nonce="MTQ0NDMyOTA1OTowOTcwOTBhMmU4MGM4OTEyZGY2O
+        	GY5NzIyZjMyZTM0MA==",
+        	opaque="9eb56ccb2e8b017ae42bdb4739690863"
 
-HTTP Digest: Access denied.
+        HTTP Digest: Access denied.
 
 It gets a little tricky here but stay with me. First thing you should do is note the returned values in the response. We will be needing them to calculate our response. 
 
-realm="Application"
-qop="auth" (quality of protection)
-algorithm=MD5
-nonce8="MTQ0NDMyOTA1OTowOTcwOTBhMmU4MGM4OTEyZGY2OGY5NzIyZjMyZTM0MA=="
-opaque="9eb56ccb2e8b017ae42bdb4739690863" 
-Calculating our response involves three steps.
+    realm="Application"
+    qop="auth" (quality of protection)
+    algorithm=MD5
+    nonce8="MTQ0NDMyOTA1OTowOTcwOTBhMmU4MGM4OTEyZGY2OGY5NzIyZjMyZTM0MA=="
+    opaque="9eb56ccb2e8b017ae42bdb4739690863" 
+    Calculating our response involves three steps.
 
 1. First, we calculate H1. This is the md5 of `username:realm:password  `
 
-    ```
-    H1 = md5(kehers@gmail.com:Application:secret)  = fc825c89d55aad0a5dda2ba83903ea9e  
-    ```
+        H1 = md5(kehers@gmail.com:Application:secret)  = fc825c89d55aad0a5dda2ba83903ea9e  
 
     Note that this is only valid if the WWW-Authenticate header in the response does not include an algorithm directive (like with our example response) or if it has a value of “`md5`”. If the algorithm directive value is “`MD5-sess`”, `H1` becomes `md5(md5(username:realm:password):nonce:cnonce)`. Cnonce is a client provided nonce[^4] value. 
 
 2. Next, we calculate H2. This is the md5 of `HTTP-method:endpoint  `
 
-    ```
-    H2 = md5(GET:/account)   = ff6ba2065ae532eebf0c813472bc795d  
-    ```
+        H2 = md5(GET:/account)   = ff6ba2065ae532eebf0c813472bc795d  
 
     This is only valid if `qop` is unspecified or is “`auth`”. If the value is “`auth-int`”, `H2` is `md5(method:endpoint:md5(entity-body)) `
 
 3. Finally, we calculate our response. Our response is `md5(HA1:nonce:nonce-count:cnonce:qop:HA2)`. We do not have a nonce-count and cnonce value so this becomes `md5(HA1:nonce:::qop:HA2)  `
 
-    ```
-    response = md5(fc825c89d55aad0a5dda2ba83903ea9e:MTQ0NDMyOTA1OTowOTcwOTBhMmU4MGM4OTEyZGY2OGY5NzIyZjMyZTM0MA==:::auth:ff6ba2065ae532eebf0c813472bc795d) = d38fcc0f22b8f4e6577b62d911214950  
-    ```
+        response = md5(fc825c89d55aad0a5dda2ba83903ea9e:MTQ0NDMyOTA1OTowOTcwOTBhMmU4MGM4OTEyZGY2OGY5NzIyZjMyZTM0MA==:::auth:ff6ba2065ae532eebf0c813472bc795d) = d38fcc0f22b8f4e6577b62d911214950  
 
     If `qop` is not specified, response is `md5(HA1:nonce:HA2)`
 

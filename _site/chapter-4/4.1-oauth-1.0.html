@@ -97,60 +97,77 @@ A signature generated based on the signature method. Our focus will be on the HM
   <li>
     <p>Assemble the request parameters</p>
 
-    <p>oauth_callback: ‘http://tumblr2jekyll.app/callback’
- oauth_version: ‘1.0’
- oauth_nonce: ‘402057506’
- oauth_signature_method: ‘HMAC-SHA1’
- oauth_consumer_key: ‘f96f91fb6e3d8a54aa’
- oauth_timestamp: ‘1444806443’</p>
+    <div class="highlighter-rouge"><pre class="highlight"><code> oauth_callback: 'http://tumblr2jekyll.app/callback'
+ oauth_version: '1.0'
+ oauth_nonce: '402057506'
+ oauth_signature_method: 'HMAC-SHA1'
+ oauth_consumer_key: 'f96f91fb6e3d8a54aa'
+ oauth_timestamp: '1444806443'
+</code></pre>
+    </div>
   </li>
   <li>
     <p>Percent-encode<sup id="fnref:3"><a href="#fn:3" class="footnote">3</a></sup> the parameter names and values and sort the parameters alphabetically by the encoded key</p>
 
-    <p>oauth_callback: ‘http%3A%2F%2Ftumblr2jekyll.app
- 						%2Fcallback’
- oauth_consumer_key: ‘f96f91fb6e3d8a54aa’
- oauth_nonce: ‘402057506’
- oauth_signature_method: ‘HMAC-SHA1’
- oauth_timestamp: ‘1444806443’
- oauth_version: ‘1.0’</p>
+    <div class="highlighter-rouge"><pre class="highlight"><code> oauth_callback: 'http%3A%2F%2Ftumblr2jekyll.app%2Fcallback'
+ oauth_consumer_key: 'f96f91fb6e3d8a54aa'
+ oauth_nonce: '402057506'
+ oauth_signature_method: 'HMAC-SHA1'
+ oauth_timestamp: '1444806443'
+ oauth_version: '1.0'
+</code></pre>
+    </div>
   </li>
   <li>
     <p>Create a query string from the encoded parameters. Remember, this is done by going through the name-value pairs, appending the name with ‘=’ character, the value, and ‘<strong>&amp;</strong>’ character if there are more name-value pairs. This is the <strong>parameter string</strong>.</p>
 
-    <p>oauth_callback=http%3A%2F%2Ftumblr2jekyll.app%2Fcallback&amp;oauth_consumer_key=f96f91fb6e3d8a54aa&amp;oauth_nonce=402057506&amp;oauth_signature_method=HMAC-SHA1&amp;oauth_timestamp=1444806443&amp;oauth_version=1.0</p>
+    <div class="highlighter-rouge"><pre class="highlight"><code> oauth_callback=http%3A%2F%2Ftumblr2jekyll.app%2Fcallback&amp;oauth_consumer_key=f96f91fb6e3d8a54aa&amp;oauth_nonce=402057506&amp;oauth_signature_method=HMAC-SHA1&amp;oauth_timestamp=1444806443&amp;oauth_version=1.0
+</code></pre>
+    </div>
   </li>
   <li>
     <p>Concatenate the HTTP method to be used (in uppercase), the percent-encoded request endpoint and the percent-encoded parameter string with ‘<strong>&amp;</strong>’ character. This is the <strong>signature base string</strong>. Our request method is POST, the request endpoint is <code class="highlighter-rouge">https://tumblr.com/oauth/request_token</code>. The request endpoint percent-encoded is <code class="highlighter-rouge">https%3A%2F%2Ftumblr.com%2Foauth%2Frequest_token</code></p>
 
-    <p>POST&amp;https%3A%2F%2Ftumblr.com%2Foauth%2Frequest_token&amp;oauth_callback%3Dhttp%253A%252F%252Ftumblr2jekyll.app%252Fcallback%26oauth_consumer_key%3Df96f91fb6e3d8a54aa%26oauth_nonce%3D402057506%26oauth_signature_method%3DHMAC-SHA1%26oauth_timestamp%3D1444806443%26oauth_version%3D1.0</p>
+    <div class="highlighter-rouge"><pre class="highlight"><code> POST&amp;https%3A%2F%2Ftumblr.com%2Foauth%2Frequest_token&amp;oauth_callback%3Dhttp%253A%252F%252Ftumblr2jekyll.app%252Fcallback%26oauth_consumer_key%3Df96f91fb6e3d8a54aa%26oauth_nonce%3D402057506%26oauth_signature_method%3DHMAC-SHA1%26oauth_timestamp%3D1444806443%26oauth_version%3D1.0
+</code></pre>
+    </div>
   </li>
   <li>
     <p>Sign the signature base string using the signature method. For RSA-SHA1, here is how it is done:</p>
 
-    <p>key = Client’s RSA private key
+    <div class="highlighter-rouge"><pre class="highlight"><code> key = Client’s RSA private key
  signature = base64-encode(RSA-SHA1(key,
- 				signature_base_string))</p>
+ 				signature_base_string))
+</code></pre>
+    </div>
 
     <p>For HMAC-SHA1, our focus, here is how it is done:</p>
 
-    <p>key = percent-encode(consumer_secret)+’&amp;’+percent-encode(token_secret)
+    <div class="highlighter-rouge"><pre class="highlight"><code> key = percent-encode(consumer_secret)+'&amp;'+percent-encode(token_secret)
  signature = base64-encode(HMAC-SHA1(key,
- 				signature_base_string))</p>
+ 				signature_base_string))
+</code></pre>
+    </div>
 
     <p>Notice how the key is same as the signature in the PLAINTEXT method. And since we have no token secret yet, it is same as:</p>
 
-    <p>key = percent-encode(consumer_secret)+’&amp;’</p>
+    <div class="highlighter-rouge"><pre class="highlight"><code> key = percent-encode(consumer_secret)+'&amp;'
+</code></pre>
+    </div>
 
     <p>Given our consumer secret as RR1ElZScYWhPBT9kb1KhX2uEAY, our key becomes:</p>
 
-    <p>key = percent-encode(RR1ElZScYWhPBT9kb1KhX2uEAY)+’&amp;’
-     = RR1ElZScYWhPBT9kb1KhX2uEAY&amp;</p>
+    <div class="highlighter-rouge"><pre class="highlight"><code> key = percent-encode(RR1ElZScYWhPBT9kb1KhX2uEAY)+'&amp;'
+     = RR1ElZScYWhPBT9kb1KhX2uEAY&amp;
+</code></pre>
+    </div>
 
     <p>and our signature<sup id="fnref:4"><a href="#fn:4" class="footnote">4</a></sup>:</p>
 
-    <p>signature = base64-encode(HMAC-SHA1(‘RR1ElZScYWhPBT9kb1KhX2uEAY&amp;’, ‘POST&amp;https%3A%2F%2Ftumblr.com%2Foauth%2Frequest_token&amp;oauth_callback%3Dhttp%253A%252F%252Ftumblr2jekyll.app%252Fcallback%26oauth_consumer_key%3Df96f91fb6e3d8a54aa%26oauth_nonce%3D402057506%26oauth_signature_method%3DHMAC-SHA1%26oauth_timestamp%3D1444806443%26oauth_version%3D1.0’))
-                          = x/VRlVq4+3FnWBEVQL5OiBGCapY=</p>
+    <div class="highlighter-rouge"><pre class="highlight"><code> signature = base64-encode(HMAC-SHA1('RR1ElZScYWhPBT9kb1KhX2uEAY&amp;', 'POST&amp;https%3A%2F%2Ftumblr.com%2Foauth%2Frequest_token&amp;oauth_callback%3Dhttp%253A%252F%252Ftumblr2jekyll.app%252Fcallback%26oauth_consumer_key%3Df96f91fb6e3d8a54aa%26oauth_nonce%3D402057506%26oauth_signature_method%3DHMAC-SHA1%26oauth_timestamp%3D1444806443%26oauth_version%3D1.0'))
+                      = x/VRlVq4+3FnWBEVQL5OiBGCapY=
+</code></pre>
+    </div>
   </li>
 </ol>
 
@@ -380,15 +397,7 @@ Authorization: OAuth oauth_consumer_key=
         <li class="six columns m-t-20 prev"><a href="/chapter-4/4.0-oauth.html">4.0. OAuth</a></li>
         <li class="six columns m-t-20 next"><a href="/chapter-4/4.2-oauth-2.0.html">4.2. OAuth 2.0</a></li>
         </ul>
-        <div id="disqus_thread"></div>
-        <script type="text/javascript">
-          var disqus_shortname = 'kehers';
-          (function() {
-              var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-              dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
-              (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-          })();
-        </script>
+
       </div>
     </div>
   </div>
@@ -409,14 +418,11 @@ Authorization: OAuth oauth_consumer_key=
 </footer>
 
 <script type="text/javascript" src="/assets/js/menu.js"></script>
+<script src="https://carnivalapp.io/sites/502/init.js"></script>
 <script>
-(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-ga('create', 'UA-53373832-1', 'auto');
-ga('send', 'pageview');
+  document.addEventListener("DOMContentLoaded", Carnival.init);
 </script>
 
 </body>
 </html>
+

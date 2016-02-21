@@ -72,74 +72,55 @@ Generating HMAC-SHA1 and RSA-SHA1 signature is a little more complex. Both invol
 
 1. Assemble the request parameters
 
-    ```
-    oauth_callback: 'http://tumblr2jekyll.app/callback'
-    oauth_version: '1.0'
-    oauth_nonce: '402057506'
-    oauth_signature_method: 'HMAC-SHA1'
-    oauth_consumer_key: 'f96f91fb6e3d8a54aa'
-    oauth_timestamp: '1444806443'
-    ```
+        oauth_callback: 'http://tumblr2jekyll.app/callback'
+        oauth_version: '1.0'
+        oauth_nonce: '402057506'
+        oauth_signature_method: 'HMAC-SHA1'
+        oauth_consumer_key: 'f96f91fb6e3d8a54aa'
+        oauth_timestamp: '1444806443'
 
 2. Percent-encode[^3] the parameter names and values and sort the parameters alphabetically by the encoded key
 
-    ```
-    oauth_callback: 'http%3A%2F%2Ftumblr2jekyll.app
-    						%2Fcallback'
-    oauth_consumer_key: 'f96f91fb6e3d8a54aa'
-    oauth_nonce: '402057506'
-    oauth_signature_method: 'HMAC-SHA1'
-    oauth_timestamp: '1444806443'
-    oauth_version: '1.0'
-    ```
+        oauth_callback: 'http%3A%2F%2Ftumblr2jekyll.app%2Fcallback'
+        oauth_consumer_key: 'f96f91fb6e3d8a54aa'
+        oauth_nonce: '402057506'
+        oauth_signature_method: 'HMAC-SHA1'
+        oauth_timestamp: '1444806443'
+        oauth_version: '1.0'
 
 3. Create a query string from the encoded parameters. Remember, this is done by going through the name-value pairs, appending the name with ‘=’ character, the value, and ‘**&**’ character if there are more name-value pairs. This is the **parameter string**.
 
-    ```
-    oauth_callback=http%3A%2F%2Ftumblr2jekyll.app%2Fcallback&oauth_consumer_key=f96f91fb6e3d8a54aa&oauth_nonce=402057506&oauth_signature_method=HMAC-SHA1&oauth_timestamp=1444806443&oauth_version=1.0
-    ```
+        oauth_callback=http%3A%2F%2Ftumblr2jekyll.app%2Fcallback&oauth_consumer_key=f96f91fb6e3d8a54aa&oauth_nonce=402057506&oauth_signature_method=HMAC-SHA1&oauth_timestamp=1444806443&oauth_version=1.0
 
 4. Concatenate the HTTP method to be used (in uppercase), the percent-encoded request endpoint and the percent-encoded parameter string with ‘**&**’ character. This is the **signature base string**. Our request method is POST, the request endpoint is `https://tumblr.com/oauth/request_token`. The request endpoint percent-encoded is `https%3A%2F%2Ftumblr.com%2Foauth%2Frequest_token`
 
-    ```
-    POST&https%3A%2F%2Ftumblr.com%2Foauth%2Frequest_token&oauth_callback%3Dhttp%253A%252F%252Ftumblr2jekyll.app%252Fcallback%26oauth_consumer_key%3Df96f91fb6e3d8a54aa%26oauth_nonce%3D402057506%26oauth_signature_method%3DHMAC-SHA1%26oauth_timestamp%3D1444806443%26oauth_version%3D1.0
-    ```
+        POST&https%3A%2F%2Ftumblr.com%2Foauth%2Frequest_token&oauth_callback%3Dhttp%253A%252F%252Ftumblr2jekyll.app%252Fcallback%26oauth_consumer_key%3Df96f91fb6e3d8a54aa%26oauth_nonce%3D402057506%26oauth_signature_method%3DHMAC-SHA1%26oauth_timestamp%3D1444806443%26oauth_version%3D1.0
 
 5. Sign the signature base string using the signature method. For RSA-SHA1, here is how it is done:
 
-    ```
-    key = Client’s RSA private key
-    signature = base64-encode(RSA-SHA1(key,
-    				signature_base_string))
-    ```
+        key = Client’s RSA private key
+        signature = base64-encode(RSA-SHA1(key,
+        				signature_base_string))
 
     For HMAC-SHA1, our focus, here is how it is done:
 
-    ```
-    key = percent-encode(consumer_secret)+'&'+percent-encode(token_secret)
-    signature = base64-encode(HMAC-SHA1(key,
-    				signature_base_string))
-    ```
+        key = percent-encode(consumer_secret)+'&'+percent-encode(token_secret)
+        signature = base64-encode(HMAC-SHA1(key,
+        				signature_base_string))
 
     Notice how the key is same as the signature in the PLAINTEXT method. And since we have no token secret yet, it is same as:
 
-    ```
-    key = percent-encode(consumer_secret)+'&'
-    ```
+        key = percent-encode(consumer_secret)+'&'
 
     Given our consumer secret as RR1ElZScYWhPBT9kb1KhX2uEAY, our key becomes:
 
-    ```
-    key = percent-encode(RR1ElZScYWhPBT9kb1KhX2uEAY)+'&'
-        = RR1ElZScYWhPBT9kb1KhX2uEAY&
-    ```
+        key = percent-encode(RR1ElZScYWhPBT9kb1KhX2uEAY)+'&'
+            = RR1ElZScYWhPBT9kb1KhX2uEAY&
 
     and our signature[^4]:
 
-    ```
-    signature = base64-encode(HMAC-SHA1('RR1ElZScYWhPBT9kb1KhX2uEAY&', 'POST&https%3A%2F%2Ftumblr.com%2Foauth%2Frequest_token&oauth_callback%3Dhttp%253A%252F%252Ftumblr2jekyll.app%252Fcallback%26oauth_consumer_key%3Df96f91fb6e3d8a54aa%26oauth_nonce%3D402057506%26oauth_signature_method%3DHMAC-SHA1%26oauth_timestamp%3D1444806443%26oauth_version%3D1.0'))
+        signature = base64-encode(HMAC-SHA1('RR1ElZScYWhPBT9kb1KhX2uEAY&', 'POST&https%3A%2F%2Ftumblr.com%2Foauth%2Frequest_token&oauth_callback%3Dhttp%253A%252F%252Ftumblr2jekyll.app%252Fcallback%26oauth_consumer_key%3Df96f91fb6e3d8a54aa%26oauth_nonce%3D402057506%26oauth_signature_method%3DHMAC-SHA1%26oauth_timestamp%3D1444806443%26oauth_version%3D1.0'))
                              = x/VRlVq4+3FnWBEVQL5OiBGCapY=
-    ```
 
 Now that we have all our OAuth parameters, including the `oauth_signature`, we can send them to the request token URL. There are three ways this can be done - through an Authorization header, POST body parameter or URI query parameter of a GET request. If the API does not support all methods, the document will mention the supported method(s). Tumblr for example supports using an Authorization header only.
 

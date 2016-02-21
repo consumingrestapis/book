@@ -70,10 +70,13 @@ curl -V
  cd curl-7.46.0 
 </code></p>
   </li>
-  <li>Run the make file and install   <br />
- <code class="highlighter-rouge">
+  <li>
+    <p>Run the make file and install  </p>
+
+    <p><code class="highlighter-rouge">
  make &amp;&amp; make install
-</code></li>
+</code></p>
+  </li>
 </ol>
 
 <p>For Windows, download the binary directly from <a href="http://curl.haxx.se/download.html">http://curl.haxx.se/download.html</a> (down the page). Once you extract the file, you will need to add the directory containing the curl.exe file to your PATH environmental variable so that you won’t have to always change directory to the curl.exe directory every time you need to run a cURL command. I recommend you move this directory to a location more permanent - so not your Desktop or Downloads folder.</p>
@@ -84,12 +87,16 @@ curl -V
   <li>Open your <strong>Control Panel</strong>, go to <strong>System</strong>, <strong>Advanced system settings</strong> and click <strong>Environmental Variables</strong>. Scroll down the <strong>System variable</strong> list till you get to <strong>Path</strong>.</li>
   <li>Double click on it. You should get the <strong>Edit System Variable</strong> popup.</li>
   <li>Place your cursor at the end of the <strong>Variable value</strong> content (if not there already). We will be adding to the existing content.</li>
-  <li>Enter a semi-colon followed by the full path to the directory containing your curl.exe. If for example, I moved it to my Documents folder and the curl.exe directory is <code class="highlighter-rouge">curl_7_46_0_openssl_nghttp2_x64</code>, I simply add this to the content:</li>
+  <li>
+    <p>Enter a semi-colon followed by the full path to the directory containing your curl.exe. If for example, I moved it to my Documents folder and the curl.exe directory is <code class="highlighter-rouge">curl_7_46_0_openssl_nghttp2_x64</code>, I simply add this to the content:</p>
+
+    <div class="highlighter-rouge"><pre class="highlight"><code> ;C\Users\kehers\Documents\curl_7_46_0_openssl_ng http2_x64  
+</code></pre>
+    </div>
+
+    <p>Don’t forget to add the semi-colon.</p>
+  </li>
 </ol>
-
-<figure class="highlight"><pre><code class="language-text" data-lang="text">  ;C\Users\kehers\Documents\curl_7_46_0_openssl_ng http2_x64  </code></pre></figure>
-
-<p>Don’t forget to add the semi-colon.</p>
 
 <h5 id="making-a-get-request-with-curl">1. Making a GET request with cURL</h5>
 
@@ -264,15 +271,7 @@ And there is more you can do. You can set headers, add message body and set auth
         <li class="six columns m-t-20 prev"><a href="/chapter-3/3.0-anatomy-of-an-api-call.html">3.0. Anatomy of an API call</a></li>
         <li class="six columns m-t-20 next"><a href="/chapter-3/3.2-response-formats.html">3.2. Response formats</a></li>
         </ul>
-        <div id="disqus_thread"></div>
-        <script type="text/javascript">
-          var disqus_shortname = 'kehers';
-          (function() {
-              var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-              dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
-              (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-          })();
-        </script>
+
       </div>
     </div>
   </div>
@@ -293,14 +292,11 @@ And there is more you can do. You can set headers, add message body and set auth
 </footer>
 
 <script type="text/javascript" src="/assets/js/menu.js"></script>
+<script src="https://carnivalapp.io/sites/502/init.js"></script>
 <script>
-(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-ga('create', 'UA-53373832-1', 'auto');
-ga('send', 'pageview');
+  document.addEventListener("DOMContentLoaded", Carnival.init);
 </script>
 
 </body>
 </html>
+

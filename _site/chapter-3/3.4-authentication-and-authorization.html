@@ -82,56 +82,60 @@
   <li>
     <p>We (client) send a request.</p>
 
-    <p><code class="highlighter-rouge">
- curl -i https://api.plivo.com/v1/Account/MYZJFMTM/
-</code></p>
+    <div class="highlighter-rouge"><pre class="highlight"><code> curl -i https://api.plivo.com/v1/Account/MYZJFMTM/
+</code></pre>
+    </div>
   </li>
   <li>
     <p>Server responds with a <code class="highlighter-rouge">401 Unauthorized</code> status and <code class="highlighter-rouge">WWW-Authenticate: Basic</code> header.</p>
 
-    <p>```
- HTTP/1.1 401 UNAUTHORIZED
+    <div class="highlighter-rouge"><pre class="highlight"><code> HTTP/1.1 401 UNAUTHORIZED
  Content-Type: text/html; charset=utf-8
  Date: Thu, 08 Oct 2015 00:58:24 GMT
  Server: nginx/1.6.2
- WWW-Authenticate: Basic realm=”Login Required”
+ WWW-Authenticate: Basic realm="Login Required"
  Content-Length: 90
- Connection: keep-alive</p>
+ Connection: keep-alive
 
-    <p>Could not verify your access level for that URL.
- ```</p>
+ Could not verify your access level for that URL.
+</code></pre>
+    </div>
   </li>
   <li>
     <p>Now that we know a Basic authentication is needed, we construct our credentials and send it back using an <code class="highlighter-rouge">Authorization</code> header. The way the credentials is constructed in Basic authentication is to base64 encode the value <strong>username:password</strong>. So if our username is <code class="highlighter-rouge">MYZJFMTM</code> and password is <code class="highlighter-rouge">ZDcwYTA0ZG</code>, the authorization string will be <code class="highlighter-rouge">base64encode(“MYZJFMTM:ZDcwYTA0ZG”)</code>. Our new request will be:</p>
 
-    <p><code class="highlighter-rouge">
- curl -H 'Authorization: Basic TVlaSkZNVE06WkRjd1lUQT
+    <div class="highlighter-rouge"><pre class="highlight"><code> curl -H 'Authorization: Basic TVlaSkZNVE06WkRjd1lUQT
  	BaRw=='
  	https://api.plivo.com/v1/Account/MYZJFMTM/
-</code></p>
+</code></pre>
+    </div>
   </li>
   <li>
     <p>The server then responds with access to the resource.</p>
 
-    <p>HTTP/1.1 200 OK
+    <div class="highlighter-rouge"><pre class="highlight"><code> HTTP/1.1 200 OK
  Content-Type: application/json
  Date: Thu, 08 Oct 2015 01:21:29 GMT
  Server: nginx/1.6.2
- Connection: keep-alive</p>
+ Connection: keep-alive
 
-    <p>{
-   “account_type”: “standard”,
-   “billing_mode”: “prepaid”,
-   “cash_credits”: “14.29624”,
-   “timezone”: “Africa/Lagos”
- }</p>
+ {
+   "account_type": "standard",
+   "billing_mode": "prepaid",
+   "cash_credits": "14.29624",
+   "timezone": "Africa/Lagos"
+ }
+</code></pre>
+    </div>
+
+    <p>One cURL tip here is that instead of having to calculate the base64 encode of username:password, I can use the u flag to directly specify the username and password and let cURL take it from there. In other words, this works perfectly fine for step 3:</p>
+
+    <div class="highlighter-rouge"><pre class="highlight"><code> curl -u 'MYZJFMTM:ZDcwYTA0ZG'
+ 	https://api.plivo.com/v1/Account/MYZJFMTM/
+</code></pre>
+    </div>
   </li>
 </ol>
-
-<p>One cURL tip here is that instead of having to calculate the base64 encode of username:password, I can use the u flag to directly specify the username and password and let cURL take it from there. In other words, this works perfectly fine for step 3:</p>
-
-<p>curl -u ‘MYZJFMTM:ZDcwYTA0ZG’
-  	https://api.plivo.com/v1/Account/MYZJFMTM/</p>
 
 <h5 id="digest-access-authentication">Digest Access Authentication</h5>
 
@@ -140,62 +144,69 @@
 <p>The flow is similar to Basic Authentication. We will use the CloudApp<sup id="fnref:3"><a href="#fn:3" class="footnote">3</a></sup> API as an example.</p>
 
 <ol>
-  <li>We send a GET request. The API requires an <code class="highlighter-rouge">application/json</code> accept header, so we include that as well.</li>
+  <li>
+    <p>We send a GET request. The API requires an <code class="highlighter-rouge">application/json</code> accept header, so we include that as well.</p>
+
+    <div class="highlighter-rouge"><pre class="highlight"><code> curl -i -H 'accept: application/json' http://my.cl.ly/account
+</code></pre>
+    </div>
+  </li>
+  <li>
+    <p>CloudApp replies with a <code class="highlighter-rouge">401</code> status and <code class="highlighter-rouge">WWW-Authenticate: Digest</code> header.</p>
+
+    <div class="highlighter-rouge"><pre class="highlight"><code> HTTP/1.1 401 Unauthorized
+ Content-Type: text/plain; charset=utf-8
+ Content-Length: 28
+ Server: nginx/1.4.6 (Ubuntu)
+ Status: 401 Unauthorized
+ WWW-Authenticate: Digest realm="Application", 		qop="auth",
+ 	algorithm=MD5,
+ 	nonce="MTQ0NDMyOTA1OTowOTcwOTBhMmU4MGM4OTEyZGY2O
+ 	GY5NzIyZjMyZTM0MA==",
+ 	opaque="9eb56ccb2e8b017ae42bdb4739690863"
+
+ HTTP Digest: Access denied.
+</code></pre>
+    </div>
+  </li>
 </ol>
-
-<p>curl -i -H ‘accept: application/json’ http://my.cl.ly/account</p>
-
-<ol>
-  <li>CloudApp replies with a <code class="highlighter-rouge">401</code> status and <code class="highlighter-rouge">WWW-Authenticate: Digest</code> header.</li>
-</ol>
-
-<p>HTTP/1.1 401 Unauthorized
-Content-Type: text/plain; charset=utf-8
-Content-Length: 28
-Server: nginx/1.4.6 (Ubuntu)
-Status: 401 Unauthorized
-WWW-Authenticate: Digest realm=”Application”, 		qop=”auth”,
-	algorithm=MD5,
-	nonce=”MTQ0NDMyOTA1OTowOTcwOTBhMmU4MGM4OTEyZGY2O
-	GY5NzIyZjMyZTM0MA==”,
-	opaque=”9eb56ccb2e8b017ae42bdb4739690863”</p>
-
-<p>HTTP Digest: Access denied.</p>
 
 <p>It gets a little tricky here but stay with me. First thing you should do is note the returned values in the response. We will be needing them to calculate our response. </p>
 
-<p>realm=”Application”
-qop=”auth” (quality of protection)
+<div class="highlighter-rouge"><pre class="highlight"><code>realm="Application"
+qop="auth" (quality of protection)
 algorithm=MD5
-nonce8=”MTQ0NDMyOTA1OTowOTcwOTBhMmU4MGM4OTEyZGY2OGY5NzIyZjMyZTM0MA==”
-opaque=”9eb56ccb2e8b017ae42bdb4739690863” 
-Calculating our response involves three steps.</p>
+nonce8="MTQ0NDMyOTA1OTowOTcwOTBhMmU4MGM4OTEyZGY2OGY5NzIyZjMyZTM0MA=="
+opaque="9eb56ccb2e8b017ae42bdb4739690863" 
+Calculating our response involves three steps.
+</code></pre>
+</div>
 
 <ol>
   <li>
     <p>First, we calculate H1. This is the md5 of <code class="highlighter-rouge">username:realm:password  </code></p>
 
-    <p><code class="highlighter-rouge">
- H1 = md5(kehers@gmail.com:Application:secret)  = fc825c89d55aad0a5dda2ba83903ea9e  
-</code></p>
+    <div class="highlighter-rouge"><pre class="highlight"><code> H1 = md5(kehers@gmail.com:Application:secret)  = fc825c89d55aad0a5dda2ba83903ea9e  
+</code></pre>
+    </div>
 
     <p>Note that this is only valid if the WWW-Authenticate header in the response does not include an algorithm directive (like with our example response) or if it has a value of “<code class="highlighter-rouge">md5</code>”. If the algorithm directive value is “<code class="highlighter-rouge">MD5-sess</code>”, <code class="highlighter-rouge">H1</code> becomes <code class="highlighter-rouge">md5(md5(username:realm:password):nonce:cnonce)</code>. Cnonce is a client provided nonce<sup id="fnref:4"><a href="#fn:4" class="footnote">4</a></sup> value. </p>
   </li>
   <li>
     <p>Next, we calculate H2. This is the md5 of <code class="highlighter-rouge">HTTP-method:endpoint  </code></p>
 
-    <p><code class="highlighter-rouge">
- H2 = md5(GET:/account)   = ff6ba2065ae532eebf0c813472bc795d  
-</code></p>
+    <div class="highlighter-rouge"><pre class="highlight"><code> H2 = md5(GET:/account)   = ff6ba2065ae532eebf0c813472bc795d  
+</code></pre>
+    </div>
 
     <p>This is only valid if <code class="highlighter-rouge">qop</code> is unspecified or is “<code class="highlighter-rouge">auth</code>”. If the value is “<code class="highlighter-rouge">auth-int</code>”, <code class="highlighter-rouge">H2</code> is <code class="highlighter-rouge">md5(method:endpoint:md5(entity-body)) </code></p>
   </li>
   <li>
     <p>Finally, we calculate our response. Our response is <code class="highlighter-rouge">md5(HA1:nonce:nonce-count:cnonce:qop:HA2)</code>. We do not have a nonce-count and cnonce value so this becomes <code class="highlighter-rouge">md5(HA1:nonce:::qop:HA2)  </code></p>
 
-    <p><code class="highlighter-rouge">
- response = md5(fc825c89d55aad0a5dda2ba83903ea9e:MTQ0NDMyOTA1OTowOTcwOTBhMmU4MGM4OTEyZGY2OGY5NzIyZjMyZTM0MA==:::auth:ff6ba2065ae532eebf0c813472bc795d) = d38fcc0f22b8f4e6577b62d911214950  
-</code></p>
+    <div class="highlighter-rouge"><pre class="highlight"><code> response = md5(fc825c89d55aad0a5dda2ba83903ea9e:MTQ0NDMyOTA1OTowOTcwOTBhMmU4MGM4OTEyZGY2OGY5NzIyZjMyZTM0MA==:::auth:ff6ba2065ae532eebf0c813472bc795d) = d38fcc0f22b8f4e6577b62d911214950  
+</code></pre>
+    </div>
 
     <p>If <code class="highlighter-rouge">qop</code> is not specified, response is <code class="highlighter-rouge">md5(HA1:nonce:HA2)</code></p>
   </li>
@@ -261,15 +272,7 @@ The client uses these tokens for subsequent calls to parts of the API that requi
         <li class="six columns m-t-20 prev"><a href="/chapter-3/3.3-errors.html">3.3. Errors</a></li>
         <li class="six columns m-t-20 next"><a href="/chapter-3/3.5-libraries.html">3.5. Libraries</a></li>
         </ul>
-        <div id="disqus_thread"></div>
-        <script type="text/javascript">
-          var disqus_shortname = 'kehers';
-          (function() {
-              var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-              dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
-              (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-          })();
-        </script>
+
       </div>
     </div>
   </div>
@@ -290,14 +293,11 @@ The client uses these tokens for subsequent calls to parts of the API that requi
 </footer>
 
 <script type="text/javascript" src="/assets/js/menu.js"></script>
+<script src="https://carnivalapp.io/sites/502/init.js"></script>
 <script>
-(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-ga('create', 'UA-53373832-1', 'auto');
-ga('send', 'pageview');
+  document.addEventListener("DOMContentLoaded", Carnival.init);
 </script>
 
 </body>
 </html>
+

@@ -12,7 +12,8 @@ article p a {
   text-decoration: underline; }
 
 code {
-  border: none; }
+  border: none;
+  word-wrap: break-word; }
 
 figure {
   margin: 0 0 0 -20px; }
