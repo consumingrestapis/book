@@ -61,6 +61,7 @@ Here is the flow of the Basic Access Authentication:
 
 2. Server responds with a `401 Unauthorized` status and `WWW-Authenticate: Basic` header.    
 
+     ~~~~
      HTTP/1.1 401 UNAUTHORIZED
      Content-Type: text/html; charset=utf-8
      Date: Thu, 08 Oct 2015 00:58:24 GMT
@@ -70,6 +71,7 @@ Here is the flow of the Basic Access Authentication:
      Connection: keep-alive
  
      Could not verify your access level for that URL.
+     ~~~~
 
 3. Now that we know a Basic authentication is needed, we construct our credentials and send it back using an `Authorization` header. The way the credentials is constructed in Basic authentication is to base64 encode the value **username:password**. So if our username is `MYZJFMTM` and password is `ZDcwYTA0ZG`, the authorization string will be `base64encode(“MYZJFMTM:ZDcwYTA0ZG”)`. Our new request will be:
 
