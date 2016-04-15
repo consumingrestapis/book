@@ -55,6 +55,8 @@ To set the PATH:
 
     Don’t forget to add the semi-colon.
 
+![](/assets/images/3.1_win.png)
+
 ##### 1. Making a GET request with cURL
 
 To make a GET request, open your console and type `curl {url}`

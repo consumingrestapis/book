@@ -32,7 +32,7 @@ Let's revisit *AviCollage* with OAuth in the picture. Since Facebook only allows
 
 1. Register the application *AviCollage* as a consumer with Facebook. This registration is important. It gets me a consumer **key** and **secret** token for OAuth requests
 2. Redirect the user to a special URL on Facebook. This URL is generally called the **authorization URL**
-3. The URL opens a page telling the user *AviCollage* wants to access his friend list. If he is not logged in, he is prompted to login. The user either accepts or declines the request
+3. The URL opens a page telling the user *AviCollage* wants to access his friend list. If he is not logged in, he is prompted to login. The user either accepts or declines the request ![](/assets/images/4.0_fb.png)
 4. If he accepts, he is redirected to *AviCollage* with some query strings that can be exchanged for a special authorization token. *AviCollage* can then use this token to make a request to pull the user’s friend list
 5. If he declines access, he is redirected back to *AviCollage* with an error message
 

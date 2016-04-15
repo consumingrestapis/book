@@ -10,6 +10,10 @@ When interacting with the platform through an API, it is the same thing. Most ti
 
 Even when you are not interested in making API calls on behalf of a user or a platform does not offer user related resources, you may still be required to authenticate the client. This is called client authentication. The way this works is you are required to first register your application on the platform. The platform then gives you a set of strings (mostly two) generally called *application* or *API keys*. Subsequently, you send these keys along your API requests so that the server can identify the client.
 
+![](/assets/images/3.4_flickr.png)
+![](/assets/images/3.4_flickr2.png)
+![](/assets/images/3.4_flickr3.png)
+
 Authentication and Authorization are closely used terms but they have slightly different meanings. Authentication verifies your access to a resource. *“Is that username and password even valid for this Twitter login?”*
 
 Authorization comes after authentication. It verifies the limits of access to the resource. *“Can you only view tweets? Can you send DMs as well?”*

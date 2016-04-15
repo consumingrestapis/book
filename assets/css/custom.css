@@ -8,6 +8,9 @@ body {
 article {
   margin: 100px 0 50px; }
 
+article img {
+  max-width: 100%; }
+
 article p a {
   text-decoration: underline; }
 

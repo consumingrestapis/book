@@ -19,6 +19,8 @@ Unlike OAuth 1 however, the process differs according to the grant type. In step
 
 Let's look at the grant types and the process for each. Don't forget that the OAuth registration comes first and the consumer gets a client id and secret.
 
+![](/assets/images/4.2_reg.png)
+
 The available grant types are:
 
 1. Authorization Code
@@ -37,8 +39,8 @@ The first step is that the consumer redirects the user to the authorization endp
 1. `response_type` - value must be **code**
 2. `client_id`
 3. `redirect_uri` - this is the callback URL the user will be redirected from the authorization URL. Optional.
-4. `scope` - the scope of authorization. This defines what the consumer is requesting access to? Photos? Likes? Followers? The available scopes will be provided by the provider. This is different from OAuth 1. In OAuth 1, the scope is specified during the application registration process: In OAuth 2, the client specifies the required scope during the authorization request.
-4. `state` - a value the consumer sends to the provider and expects to be sent back to the redirect url. The consumer uses this to maintain states between the request and callback to prevent unauthorized request by a third-party disguising as the consumer. The consumer checks this when the user is redirected back to be sure it matches what was sent initially. This helps ensure the callback redirection is not from the wrong source. The parameter is optional but recommended.
+4. `scope` - the scope of authorization. This defines what the consumer is requesting access to? Photos? Likes? Followers? The available scopes will be provided by the provider. This is different from OAuth 1. In OAuth 1, the scope is specified during the application registration process: In OAuth 2, the client specifies the required scope during the authorization request. ![Scope in OAuth 1](/assets/images/4.2_scope.jpg)
+5. `state` - a value the consumer sends to the provider and expects to be sent back to the redirect url. The consumer uses this to maintain states between the request and callback to prevent unauthorized request by a third-party disguising as the consumer. The consumer checks this when the user is redirected back to be sure it matches what was sent initially. This helps ensure the callback redirection is not from the wrong source. The parameter is optional but recommended.
 
 Here is a sample authorization URL with the parameters:
 
@@ -47,6 +49,8 @@ https://api.instagram.com/oauth/authorize/?client_id={CLIENT_ID}&redirect_uri={R
 {% endhighlight %}
 
 The authorization URL presents the user an authorization page where the user gets to allow or deny access the consumer access.
+
+![](/assets/images/4.2_auth.jpg)
 
 The user is then redirected back to the **redirect_uri** with an authorization code, if he chooses to allow, or an error if he denies.
 

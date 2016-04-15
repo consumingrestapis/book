@@ -6,17 +6,26 @@ layout: post
 ---
 How do we even start making API calls? How do we manage the requests and responses? What tools can we use?
 
-Consuming a REST API starts with identifying the API and the documentation. When a platform provides a REST API, it documents the available resources, URLs to perform different actions on the resources (endpoints), HTTP request methods to use, data parameters to send and responses to expect. Services that offer API access always have the link to the documentation displayed on the homepage (the footer most times). The trend is to use "developers" for the link.
+Consuming a REST API starts with identifying the API and the documentation. When a platform provides a REST API, it documents the available resources, URLs to perform different actions on the resources (endpoints), HTTP request methods to use, data parameters to send and responses to expect. Services that offer API access always have the link to the documentation displayed on the homepage (the footer most times). The trend is to use "developers" for the link. (Or "API").
 
 Facebook:
+![Facebook developer link](/assets/images/3.0_fb.png)
+
 SoundCloud:
+![Soundcloud developer link](/assets/images/3.0_soundcloud.png)
+
 Instagram:
+![Instagram developer link](/assets/images/3.0_ig.png)
 
 For our exploration, we will look at a  simple API - Postcodes.io, a post code & geolocation API for the UK.
 
 The first API method on the documentation page (postcodes.io/docs) is for **Postcode Lookup**. The request method is **GET** meaning we need to send a GET request to `api.postcodes.io/postcodes/{postcode}` e.g `https://api.postcodes.io/postcodes/OX49 5NU`.
 
+![](/assets/images/3.0_postcodes.png)
+
 Since it is a GET request, we can just paste that URL in our browser. 
+
+![](/assets/images/3.0_postcodes_response.png)
 
 And there, the API response!
 

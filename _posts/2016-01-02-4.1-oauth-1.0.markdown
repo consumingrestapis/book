@@ -11,6 +11,9 @@ The OAuth 1.0 protocol[^1] has different implementations depending on the provid
 3. The user is redirected back with the authorized request token. The consumer then sends the Request Token to the provider in exchange for an **Access Token** through an **Access Token URL**
 
 The URLs involved in this process are called the **OAuth endpoints**. Here are Tumblr’s OAuth endpoints[^2]:
+
+![](/assets/images/4.1_tumblr_endpoints.png)
+
 If the provider offers other implementations or changes to the standard OAuth 1.0 specification, it will be documented. The changes are always very little and you can easily adapt the standard flow to it.
 
 Now, let's break down the steps.
@@ -189,6 +192,8 @@ The consumer then parses the returned body and redirects the user to the authori
 https://www.tumblr.com/oauth/authorize?oauth_token=hdk48Djdsa
 {% endhighlight %}
 
+![](/assets/images/4.1_tumblr.png)
+
 The authorize endpoint tells the user the consumer wants his authorization. If he accepts, the provider redirects the user back to the specified oauth_callback with the parameters `oauth_token` and `oauth_verifier` passed through the URL query string.
 
 {% highlight text %}
@@ -348,6 +353,10 @@ curl https://api.tumblr.com/v2/user/dashboard?type=quote -H 'Authorization: OAut
 {% endhighlight %}
 
 Oauth.net and Flickr have these pictorial break down of the flow. It will help you understand and remember better.
+
+![](/assets/images/4.1_oauth_oauth.png)
+
+![](/assets/images/4.1_flickr_oauth.jpg)
 
 [^1]: RFC 5849: [http://tools.ietf.org/html/rfc5849](http://tools.ietf.org/html/rfc5849)
 [^2]: [https://www.tumblr.com/docs/en/api/v2#oauth](https://www.tumblr.com/docs/en/api/v2#oauth)
